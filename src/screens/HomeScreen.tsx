@@ -33,7 +33,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onStart, onSettings, onL
     : 100;
 
   return (
-    <div className="flex flex-col items-center justify-start min-h-full py-4 px-5 relative">
+    <div className="flex flex-col items-center justify-start min-h-full pt-safe px-5 pb-4 relative">
       {/* Animated Background Blocks */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {[...Array(12)].map((_, i) => (
@@ -65,10 +65,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onStart, onSettings, onL
 
       {/* Top Player Status Bar */}
       <motion.div
-        initial={{ y: -100, opacity: 0 }}
+        initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ type: 'spring', damping: 20 }}
-        className="fixed top-0 left-0 right-0 p-4 z-50 flex justify-center items-start gap-2"
+        className="w-full flex justify-center items-start gap-2 mb-4 z-10 flex-shrink-0"
       >
         <motion.div 
           whileHover={{ scale: 1.02 }}
@@ -123,7 +123,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onStart, onSettings, onL
       <motion.div
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="text-center mb-4 sm:mb-8 relative z-10 flex flex-col items-center mt-10 sm:mt-12"
+        className="text-center mb-4 sm:mb-6 relative z-10 flex flex-col items-center mt-2 sm:mt-4"
       >
         {/* New Animated App Logo */}
         <div className="w-24 h-24 sm:w-32 sm:h-32 mb-4 sm:mb-6 relative">
