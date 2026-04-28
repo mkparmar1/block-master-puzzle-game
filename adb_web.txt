@@ -1,0 +1,22 @@
+﻿--------- beginning of main
+04-21 01:00:38.238 30040 30040 D Capacitor: Starting BridgeActivity
+04-21 01:00:38.255 30040 30040 D Capacitor: Registering plugin instance: CapacitorCookies
+04-21 01:00:38.259 30040 30040 D Capacitor: Registering plugin instance: WebView
+04-21 01:00:38.260 30040 30040 D Capacitor: Registering plugin instance: CapacitorHttp
+04-21 01:00:38.262 30040 30040 D Capacitor: Registering plugin instance: SystemBars
+04-21 01:00:38.265 30040 30040 D Capacitor: Registering plugin instance: Share
+04-21 01:00:38.286 30040 30040 W Capacitor: Unable to read file at path public/plugins
+04-21 01:00:38.289 30040 30040 D Capacitor: Loading app at https://localhost
+04-21 01:00:38.326 30040 30134 D Capacitor: Handling local request: https://localhost/
+04-21 01:00:38.335 30040 30040 D Capacitor: App started
+04-21 01:00:38.338 30040 30040 D Capacitor: App resumed
+04-21 01:00:38.423 30040 30133 D Capacitor: Handling local request: https://localhost/assets/index-DT_sXs5c.js
+04-21 01:00:38.425 30040 30134 D Capacitor: Handling local request: https://localhost/assets/index-D7XpzmmX.css
+04-21 01:00:38.726 30040 30135 D Capacitor: Handling local request: https://localhost/sw.js
+04-21 01:00:38.750 30040 30133 D Capacitor: Handling local request: https://localhost/
+04-21 01:00:38.751 30040 30134 D Capacitor: Handling local request: https://localhost/index.html
+04-21 01:00:38.755 30040 30134 D Capacitor: Handling local request: https://localhost/manifest.json
+04-21 01:00:38.792 30040 30040 E Capacitor/Console: File:  - Line 827 - Msg: TypeError: u is not a function
+04-21 01:00:38.793 30040 30040 E Capacitor/Console: File: https://localhost/assets/index-DT_sXs5c.js - Line 278 - Msg: Uncaught TypeError: u is not a function
+04-21 01:00:38.798 30040 30040 E Capacitor: JavaScript Error: {"type":"js.error","error":{"message":"Uncaught TypeError: u is not a function","url":"https://localhost/assets/index-DT_sXs5c.js","line":278,"col":27412,"errorObject":"{}"}}
+04-21 01:00:38.799 30040 30133 D Capacitor: Handling local request: https://localhost/favicon.ico

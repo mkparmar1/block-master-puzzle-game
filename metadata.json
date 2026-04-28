@@ -1,0 +1,5 @@
+{
+  "name": "Block Master Puzzle",
+  "description": "An addictive 8x8 block puzzle game with smooth animations, modern UI, and Android support via Capacitor.",
+  "requestFramePermissions": []
+}

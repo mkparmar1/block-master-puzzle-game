@@ -1,0 +1,21 @@
+{
+  "name": "Block Master Puzzle",
+  "short_name": "BlockMaster",
+  "description": "The ultimate block puzzle game. Drag, drop, and clear lines to master the grid!",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f172a",
+  "theme_color": "#3b82f6",
+  "categories": ["games", "puzzle"],
+  "icons": [
+    {
+      "src": "/logos.png",
+      "sizes": "192x192 512x512 1024x1024",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [],
+  "prefer_related_applications": false
+}
