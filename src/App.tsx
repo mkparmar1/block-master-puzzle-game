@@ -114,15 +114,15 @@ export default function App() {
   };
 
   return (
-    <div className="h-full w-full overflow-hidden bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 selection:bg-blue-500/30 relative">
-      <AnimatePresence mode="wait">
+    <div className="h-full w-full overflow-hidden text-slate-100 selection:bg-blue-500/30 relative" style={{ background: '#0F172A' }}>
+      <AnimatePresence>
         {currentScreen === 'tutorial' && (
-          <motion.div key="tutorial" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 overflow-y-auto">
+          <motion.div key="tutorial" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0">
             <TutorialScreen onComplete={handleTutorialComplete} />
           </motion.div>
         )}
         {currentScreen === 'home' && (
-          <motion.div key="home" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, x: -20 }} className="absolute inset-0 overflow-y-auto">
+          <motion.div key="home" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, x: -20 }} className="absolute inset-0">
             <HomeScreen
               onStart={handleGoToSelection}
               onSettings={handleSettings}
@@ -134,37 +134,37 @@ export default function App() {
           </motion.div>
         )}
         {currentScreen === 'level-selection' && (
-          <motion.div key="selection" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="absolute inset-0 overflow-y-auto">
+          <motion.div key="selection" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="absolute inset-0">
             <LevelSelectionScreen onBack={handleHome} onStart={handleStartGame} />
           </motion.div>
         )}
         {currentScreen === 'game' && (
-          <motion.div key="game" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 overflow-hidden">
+          <motion.div key="game" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0">
             <GameScreen onHome={handleHome} />
           </motion.div>
         )}
         {currentScreen === 'settings' && (
-          <motion.div key="settings" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="absolute inset-0 overflow-y-auto">
+          <motion.div key="settings" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="absolute inset-0">
             <SettingsScreen onBack={handleHome} />
           </motion.div>
         )}
         {currentScreen === 'leaderboard' && (
-          <motion.div key="leaderboard" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="absolute inset-0 overflow-y-auto">
+          <motion.div key="leaderboard" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="absolute inset-0">
             <LeaderboardScreen onBack={handleHome} />
           </motion.div>
         )}
         {currentScreen === 'daily' && (
-          <motion.div key="daily" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="absolute inset-0 overflow-y-auto">
+          <motion.div key="daily" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="absolute inset-0">
             <DailyChallengeScreen onBack={handleHome} onStart={handleStartGame} />
           </motion.div>
         )}
         {currentScreen === 'quests' && (
-          <motion.div key="quests" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }} className="absolute inset-0 overflow-y-auto bg-slate-50 dark:bg-slate-950">
+          <motion.div key="quests" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }} className="absolute inset-0">
             <QuestsScreen onBack={handleHome} />
           </motion.div>
         )}
         {currentScreen === 'journey' && (
-          <motion.div key="journey" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="absolute inset-0 overflow-hidden bg-slate-50 dark:bg-slate-950">
+          <motion.div key="journey" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="absolute inset-0">
             <JourneyScreen onBack={handleHome} onSelectLevel={handleStartJourneyLevel} />
           </motion.div>
         )}

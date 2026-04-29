@@ -37,13 +37,17 @@ export const JourneyScreen: React.FC<JourneyScreenProps> = ({ onBack, onSelectLe
   const positionClass = ['justify-start', 'justify-center', 'justify-end'];
 
   return (
-    <div className="flex flex-col h-full p-4 sm:p-6 relative safe-area-inset">
+    <div className="flex flex-col h-full p-4 sm:p-6 relative safe-area-inset" style={{ background: 'linear-gradient(160deg, #0F172A 0%, #0d1f5c 50%, #1E3A8A 100%)', isolation: 'isolate' }}>
+      {/* Ambient orbs */}
+      <div className="absolute top-[10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-blue-500/15 blur-[100px] pointer-events-none z-[-1]" />
+      <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-purple-500/20 blur-[80px] pointer-events-none z-[-1]" />
+      
       {/* Animated Background */}
       <div
-        className="absolute inset-0 opacity-5 pointer-events-none"
+        className="absolute inset-0 opacity-[0.03] pointer-events-none z-[-1]"
         style={{
           background:
-            'linear-gradient(45deg, rgb(var(--color-primary) / 0.1) 25%, transparent 25%, transparent 75%, rgb(var(--color-primary) / 0.1) 75%, rgb(var(--color-primary) / 0.1)), linear-gradient(45deg, rgb(var(--color-primary) / 0.1) 25%, transparent 25%, transparent 75%, rgb(var(--color-primary) / 0.1) 75%, rgb(var(--color-primary) / 0.1))',
+            'linear-gradient(45deg, #ffffff 25%, transparent 25%, transparent 75%, #ffffff 75%, #ffffff), linear-gradient(45deg, #ffffff 25%, transparent 25%, transparent 75%, #ffffff 75%, #ffffff)',
           backgroundSize: '40px 40px',
           backgroundPosition: '0 0, 20px 20px',
         }}
