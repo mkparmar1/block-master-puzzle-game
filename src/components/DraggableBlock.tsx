@@ -230,19 +230,19 @@ export const DraggableBlock: React.FC<DraggableBlockProps> = ({
         {trailParticles.map(p => (
           <motion.div
             key={p.id}
-            initial={{ opacity: 0.6, scale: 0.5, filter: 'blur(2px)' }}
-            animate={{ opacity: 0, scale: 1.5, filter: 'blur(6px)' }}
+            initial={{ opacity: 0.85, scale: 0.6, filter: 'blur(1px)' }}
+            animate={{ opacity: 0, scale: 2.2, filter: 'blur(8px)' }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.45 }}
             className="fixed pointer-events-none rounded-full z-[40]"
             style={{
               left: p.x,
               top: p.y,
-              width: 12,
-              height: 12,
+              width: 14,
+              height: 14,
               backgroundColor: block.color,
               transform: 'translate(-50%, -50%)',
-              boxShadow: `0 0 10px ${block.color}`,
+              boxShadow: `0 0 16px 4px ${block.color}aa, 0 0 30px ${block.color}55`,
             }}
           />
         ))}
@@ -257,7 +257,14 @@ export const DraggableBlock: React.FC<DraggableBlockProps> = ({
             exit={{ scale: 0, opacity: 0 }}
             onClick={handleRotate}
             onTouchEnd={(e) => { e.stopPropagation(); handleRotate(e); }}
-            className="absolute -top-7 left-1/2 -translate-x-1/2 z-50 bg-white dark:bg-slate-800 shadow-lg border border-slate-200 dark:border-slate-600 rounded-full p-1.5 text-slate-600 dark:text-slate-300"
+            className="absolute -top-8 left-1/2 -translate-x-1/2 z-50 rounded-full p-2"
+            style={{
+              background: 'rgba(59,130,246,0.25)',
+              border: '1px solid rgba(59,130,246,0.55)',
+              boxShadow: '0 0 14px rgba(59,130,246,0.45)',
+              backdropFilter: 'blur(8px)',
+              color: '#93c5fd',
+            }}
           >
             <RotateCw size={14} />
           </motion.button>
@@ -275,19 +282,32 @@ export const DraggableBlock: React.FC<DraggableBlockProps> = ({
         onDragEnd={handleDragEnd}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
-        whileDrag={{ scale: 1.1, zIndex: 100, filter: 'drop-shadow(0px 12px 20px rgba(0,0,0,0.35))' }}
+        whileDrag={{
+          scale: 1.12,
+          zIndex: 100,
+          filter: `drop-shadow(0px 16px 28px rgba(0,0,0,0.55)) drop-shadow(0px 0px 12px ${block.color}88)`,
+        }}
         animate={isDragging ? undefined : { scale: 0.65 }}
         transition={!isDragging ? {} : { type: 'spring', stiffness: 800, damping: 35 }}
         style={{ touchAction: 'none' }}
         className={cn(
-          'cursor-grab active:cursor-grabbing z-50 flex items-center justify-center',
+          'cursor-grab active:cursor-grabbing z-50 flex items-center justify-center relative',
           isDragging ? 'opacity-100' : 'transition-colors'
         )}
-        // Double-click to rotate on desktop
         onDoubleClick={handleRotate}
         onHoverStart={() => setShowRotate(true)}
         onHoverEnd={() => setShowRotate(false)}
       >
+        {/* Neon glow aura — visible while dragging */}
+        {isDragging && (
+          <div
+            className="absolute inset-[-6px] rounded-xl pointer-events-none"
+            style={{
+              boxShadow: `0 0 20px 6px ${block.color}66, 0 0 40px 10px ${block.color}33`,
+              animation: 'dragger-pulse 0.8s ease-in-out infinite alternate',
+            }}
+          />
+        )}
         <motion.div 
           className="grid"
           animate={isInvalidDrop ? {

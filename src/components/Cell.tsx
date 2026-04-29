@@ -34,28 +34,34 @@ const getIconForColor = (color: string | null) => {
   return null;
 };
 
-/** Classic skin — original premium look */
+/** Classic skin — premium 3D look optimised for dark backgrounds */
 const ClassicCell: React.FC<{ color: string }> = ({ color }) => (
   <motion.div
-    initial={{ scale: 0.85, opacity: 0 }}
+    initial={{ scale: 0.75, opacity: 0 }}
     animate={{ scale: 1, opacity: 1 }}
-    transition={{ duration: 0.1, ease: 'easeOut' }}
-    className="w-full h-full rounded-md sm:rounded-lg border-t-2 border-l-2 border-white/60 flex items-center justify-center relative"
+    transition={{ duration: 0.12, ease: [0.34, 1.56, 0.64, 1] }}
+    className="w-full h-full rounded-[6px] flex items-center justify-center relative overflow-hidden"
     style={{
       backgroundColor: color,
-      boxShadow: `inset 4px 4px 8px rgba(255,255,255,0.6), inset -4px -4px 8px rgba(0,0,0,0.4), 0 6px 12px rgba(0,0,0,0.3)`,
+      boxShadow: [
+        `inset 3px 3px 6px rgba(255,255,255,0.45)`,
+        `inset -3px -3px 6px rgba(0,0,0,0.55)`,
+        `0 0 10px ${color}88`,
+        `0 0 22px ${color}44`,
+        `0 4px 14px rgba(0,0,0,0.55)`,
+      ].join(', '),
+      border: `1px solid ${color}cc`,
     }}
   >
-    <div className="absolute inset-0 flex items-center justify-center opacity-30 mix-blend-overlay">
+    {/* top-left highlight bevel */}
+    <div className="absolute inset-0 rounded-[6px] pointer-events-none"
+      style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.22) 0%, transparent 50%)' }} />
+    {/* inner icon */}
+    <div className="relative z-10 w-[55%] h-[55%] flex items-center justify-center opacity-60 drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]">
       {getIconForColor(color)}
     </div>
-    <div className="w-[75%] h-[75%] rounded-md border-2 border-white/30 bg-gradient-to-br from-white/20 to-black/10 flex items-center justify-center shadow-[inset_0_2px_4px_rgba(255,255,255,0.4)]">
-      <div className="w-full h-full flex items-center justify-center drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)]">
-        {getIconForColor(color)}
-      </div>
-    </div>
-    {/* Shine */}
-    <div className="absolute top-1 left-1 w-1/3 h-1/3 bg-white/30 rounded-full blur-[2px] -rotate-45" />
+    {/* Shine spot */}
+    <div className="absolute top-[10%] left-[10%] w-[28%] h-[28%] bg-white/40 rounded-full blur-[3px]" />
   </motion.div>
 );
 
@@ -167,11 +173,16 @@ export const Cell: React.FC<CellProps> = ({ color, isGhost, isInvalid, skinOverr
   return (
     <div
       className={cn(
-        'w-full h-full rounded-md sm:rounded-lg transition-all duration-300 relative overflow-hidden',
-        !color && 'bg-slate-200/40 dark:bg-slate-800/40 shadow-inner',
-        isGhost && 'animate-pulse',
-        isInvalid && 'bg-red-500/20'
+        'w-full h-full relative overflow-hidden transition-all duration-200',
       )}
+      style={{
+        borderRadius: '6px',
+        ...((!color && !isGhost) ? {
+          background: 'rgba(255,255,255,0.025)',
+          boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.4), inset 0 0 0 1px rgba(255,255,255,0.04)',
+        } : {}),
+        ...(isInvalid ? { background: 'rgba(239,68,68,0.15)' } : {}),
+      }}
     >
       {/* Filled cell — render skin */}
       {color && !isGhost && (
@@ -182,13 +193,15 @@ export const Cell: React.FC<CellProps> = ({ color, isGhost, isInvalid, skinOverr
         <ClassicCell color={color} />
       )}
 
-      {/* Ghost overlay */}
+      {/* Ghost placement preview */}
       {isGhost && (
         <div
-          className={cn(
-            'absolute inset-0 border-2 border-dashed rounded-md sm:rounded-lg',
-            isInvalid ? 'border-red-500/50' : 'border-white/40'
-          )}
+          style={{
+            position: 'absolute', inset: 0, borderRadius: '6px',
+            border: `2px dashed ${isInvalid ? 'rgba(239,68,68,0.7)' : 'rgba(255,255,255,0.5)'}`,
+            background: isInvalid ? 'rgba(239,68,68,0.12)' : 'rgba(255,255,255,0.07)',
+            animation: 'pulse 1.2s ease-in-out infinite',
+          }}
         />
       )}
     </div>

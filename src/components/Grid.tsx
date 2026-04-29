@@ -8,11 +8,9 @@ import { Grid as GridType } from '../game/gridLogic';
 import { Cell } from './Cell';
 import { HintSparkle } from './ParticleEffect';
 
-// Local utility for tailwind class merging
 function cn(...classes: any[]) {
   return classes.filter(Boolean).filter(c => typeof c === 'string').join(' ');
 }
-
 
 interface GridProps {
   grid: GridType;
@@ -32,35 +30,33 @@ export const Grid: React.FC<GridProps> = ({ grid, ghostBlock, hintCell, onCellCl
 
   return (
     <div
-      className="aspect-square w-full max-w-md bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl p-1.5 sm:p-2 rounded-3xl shadow-2xl grid gap-1 sm:gap-1.5 border border-white dark:border-slate-800 relative overflow-hidden"
+      className="gs-grid aspect-square w-full max-w-md relative overflow-hidden"
       style={{
+        background: 'rgba(6,14,40,0.85)',
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
+        border: '1px solid rgba(99,102,241,0.2)',
+        borderRadius: '1.5rem',
+        padding: '8px',
+        boxShadow: `
+          0 0 0 1px rgba(59,130,246,0.08),
+          0 20px 60px rgba(0,0,0,0.6),
+          inset 0 1px 0 rgba(255,255,255,0.05),
+          0 0 40px rgba(99,102,241,0.08)
+        `,
+        display: 'grid',
         gridTemplateColumns: `repeat(${size}, 1fr)`,
         gridTemplateRows: `repeat(${size}, 1fr)`,
+        gap: '3px',
       }}
     >
-      {/* Checkerboard Pattern Background */}
-      <div className="absolute inset-0 grid" style={{
-        gridTemplateColumns: `repeat(${size}, 1fr)`,
-        gridTemplateRows: `repeat(${size}, 1fr)`,
-        padding: 'inherit',
-        gap: 'inherit'
-      }}>
-        {Array.from({ length: size * size }).map((_, i) => {
-          const r = Math.floor(i / size);
-          const c = i % size;
-          const isDark = (r + c) % 2 === 1;
-          return (
-            <div
-              key={`bg-${i}`}
-              className={cn(
-                'w-full h-full rounded-lg',
-                isDark ? 'bg-slate-500/[0.03] dark:bg-white/[0.02]' : 'bg-transparent'
-              )}
-              style={isDark ? { backgroundColor: 'rgb(var(--color-primary) / 0.03)' } : {}}
-            />
-          );
-        })}
-      </div>
+      {/* Grid inner ambient glow */}
+      <div
+        className="absolute inset-0 pointer-events-none rounded-[1.4rem] opacity-30"
+        style={{
+          background: 'radial-gradient(ellipse at 50% 0%, rgba(59,130,246,0.12) 0%, transparent 60%)',
+        }}
+      />
 
       {/* Grid cells */}
       {grid.map((row, r) =>
@@ -89,7 +85,12 @@ export const Grid: React.FC<GridProps> = ({ grid, ghostBlock, hintCell, onCellCl
           }
 
           return (
-            <div key={`${r}-${c}`} className="relative" onClick={() => onCellClick?.(r, c)}>
+            <div
+              key={`${r}-${c}`}
+              className="relative"
+              style={{ borderRadius: '6px', overflow: 'hidden' }}
+              onClick={() => onCellClick?.(r, c)}
+            >
               <Cell color={color} isGhost={isGhost} isInvalid={isInvalid} />
               {isHint && !color && <HintSparkle show={true} />}
             </div>

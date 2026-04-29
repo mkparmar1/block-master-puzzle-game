@@ -11,7 +11,7 @@ import { Grid } from '../components/Grid';
 import { DraggableBlock } from '../components/DraggableBlock';
 import { ScoreBoard } from '../components/ScoreBoard';
 import { AchievementToast } from '../components/AchievementToast';
-import { LineClearBurst, ComboFlash, BoardClearFlash, PlaceRipple } from '../components/ParticleEffect';
+import { LineClearBurst, ComboFlash, BoardClearFlash, PlaceRipple, FloatingXP } from '../components/ParticleEffect';
 import { useThemeStore } from '../store/useThemeStore';
 import { canPlaceBlock } from '../game/gridLogic';
 import { StarShop } from '../components/StarShop';
@@ -106,6 +106,8 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onHome }) => {
 
   const [rippleData, setRippleData] = useState({ show: false, x: 0, y: 0, color: '' });
   const [newRankCelebration, setNewRankCelebration] = useState<string | null>(null);
+  // Floating XP chips — [{id, amount, x, y}]
+  const [xpFloats, setXpFloats] = useState<{ id: number; amount: number; x: number; y: number }[]>([]);
 
   const [ghostBlock, setGhostBlock] = useState<{
     row: number; col: number; shape: number[][]; color: string; isValid: boolean;
@@ -162,6 +164,18 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onHome }) => {
       setShowComboBanner(false);
     }
   }, [combo]);
+
+  // Spawn floating XP on line clear
+  useEffect(() => {
+    if (lastClearedLines > 0 && gridRef.current) {
+      const rect = gridRef.current.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const xpAmount = lastClearedLines * 15;
+      const id = Date.now();
+      setXpFloats(prev => [...prev, { id, amount: xpAmount, x: cx, y: cy }]);
+    }
+  }, [lastClearedLines]);
 
   // Master Clock for Time Attack
   useEffect(() => {
@@ -351,7 +365,10 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onHome }) => {
   };
 
   return (
-    <div className="flex flex-col items-center h-full px-3 pt-2 overflow-hidden safe-area-inset relative">
+    <div className="gs-root flex flex-col items-center h-full px-3 pt-2 overflow-hidden safe-area-inset relative" style={{ background: 'linear-gradient(160deg, #0F172A 0%, #0d1f5c 50%, #1E3A8A 100%)', isolation: 'isolate' }}>
+      {/* Ambient orbs */}
+      <div className="gs-orb gs-orb-top absolute pointer-events-none" />
+      <div className="gs-orb gs-orb-right absolute pointer-events-none" />
       {/* Achievement Toast */}
       <AchievementToast achievements={newAchievements} onDone={clearNewAchievements} />
 
@@ -366,6 +383,17 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onHome }) => {
       <ComboFlash combo={combo} />
       <BoardClearFlash active={boardClearActive} />
       <PlaceRipple {...rippleData} />
+
+      {/* Floating XP numbers */}
+      {xpFloats.map(f => (
+        <FloatingXP
+          key={f.id}
+          amount={f.amount}
+          x={f.x}
+          y={f.y}
+          onDone={() => setXpFloats(prev => prev.filter(p => p.id !== f.id))}
+        />
+      ))}
 
       {/* Rank Up Celebration */}
       <AnimatePresence>
@@ -471,7 +499,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onHome }) => {
       </div>
 
       {/* Block Tray */}
-      <div className="relative flex-shrink-0 w-full max-w-md flex justify-around items-center bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-[2rem] mt-1.5 sm:mt-3 border border-white dark:border-slate-800 shadow-[0_8px_20px_rgba(0,0,0,0.05)] py-2 sm:py-3" style={{ minHeight: '4.5rem' }}>
+      <div className="gs-tray relative flex-shrink-0 w-full max-w-md flex justify-around items-center rounded-[1.6rem] mt-1.5 sm:mt-3 py-2 sm:py-3" style={{ minHeight: '4.5rem' }}>
         <AnimatePresence mode="sync">
           {localBlocks.map((block) => (
             <motion.div key={block.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
@@ -493,94 +521,73 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onHome }) => {
       </div>
 
       {/* Ergonomic Bottom NavBar */}
-      <div className="flex-shrink-0 flex justify-around items-center w-full max-w-md mt-1.5 sm:mt-3 mb-1 py-1.5 sm:py-2 px-3 sm:px-6 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-[2rem] border border-white dark:border-slate-800 shadow-xl relative z-10 transition-colors duration-300 pb-safe">
+      <div className="gs-navbar flex-shrink-0 flex justify-around items-center w-full max-w-md mt-1.5 sm:mt-3 mb-1 py-1.5 sm:py-2 px-3 sm:px-6 rounded-[1.6rem] relative z-10 pb-safe">
         
         {/* Menu/Home */}
         <motion.button whileHover={{ y: -3 }} whileTap={{ scale: 0.9 }} onClick={onHome}
-          className="flex flex-col items-center gap-1 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100 transition-colors">
-          <div className="p-3 bg-slate-100 dark:bg-slate-800/60 rounded-full">
-            <Home size={22} />
+          className="gs-nav-btn flex flex-col items-center gap-1">
+          <div className="gs-nav-icon p-3 rounded-full">
+            <Home size={22} className="text-slate-300" />
           </div>
-          <span className="text-[9px] font-black uppercase tracking-wider">Menu</span>
+          <span className="gs-nav-label">Menu</span>
         </motion.button>
 
         {/* Undo */}
         <motion.button whileHover={{ y: -3 }} whileTap={{ scale: 0.9 }}
           onClick={handleUndo} disabled={undoCharges <= 0}
-          className={cn(
-            'relative flex flex-col items-center gap-1 transition-colors',
-            undoCharges > 0
-              ? 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100'
-              : 'text-slate-300 dark:text-slate-600 cursor-not-allowed opacity-50'
-          )}>
-          <div className="p-3 bg-slate-100 dark:bg-slate-800/60 rounded-full relative">
-            <Undo2 size={22} />
+          className={cn('gs-nav-btn relative flex flex-col items-center gap-1', undoCharges <= 0 && 'opacity-40 cursor-not-allowed')}>
+          <div className="gs-nav-icon p-3 rounded-full relative">
+            <Undo2 size={22} className="text-slate-300" />
             {undoCharges > 0 && (
-              <span className="absolute -top-1 -right-1 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-md scale-110"
-                style={{ background: 'var(--gradient-button)' }}>
-                {undoCharges}
-              </span>
+              <span className="gs-badge absolute -top-1 -right-1">{undoCharges}</span>
             )}
           </div>
-          <span className="text-[9px] font-black uppercase tracking-wider">Undo</span>
+          <span className="gs-nav-label">Undo</span>
         </motion.button>
 
         {/* Refresh Tray */}
         <motion.button whileHover={{ y: -3 }} whileTap={{ scale: 0.9 }}
           onClick={handleRefresh} disabled={refreshCharges <= 0}
-          className={cn(
-            'relative flex flex-col items-center gap-1 transition-colors',
-            refreshCharges > 0
-              ? 'text-white drop-shadow-md'
-              : 'text-slate-300 dark:text-slate-600 cursor-not-allowed opacity-50'
-          )}>
-          <div className="p-3 rounded-full relative" style={refreshCharges > 0 ? { background: 'var(--gradient-button)' } : { backgroundColor: 'rgb(148 163 184 / 0.2)' }}>
-            <RefreshCw size={22} className={cn(refreshCharges > 0 && 'animate-spin-slow')} />
+          className={cn('gs-nav-btn relative flex flex-col items-center gap-1', refreshCharges <= 0 && 'opacity-40 cursor-not-allowed')}>
+          <div className={cn('p-3 rounded-full relative', refreshCharges > 0 ? 'gs-nav-icon-active' : 'gs-nav-icon')}>
+            <RefreshCw size={22} className={cn('text-slate-300', refreshCharges > 0 && 'animate-spin-slow')} />
             {refreshCharges > 0 && (
-              <span className="absolute -top-1 -right-1 bg-white text-slate-800 text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-md scale-110">
-                {refreshCharges}
-              </span>
+              <span className="gs-badge absolute -top-1 -right-1">{refreshCharges}</span>
             )}
           </div>
-          <span className="text-[9px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">Refresh</span>
+          <span className="gs-nav-label">Refresh</span>
         </motion.button>
 
         {/* Restart Game */}
         <motion.button whileHover={{ y: -3, rotate: -45 }} whileTap={{ scale: 0.9 }} onClick={resetGame}
-          className="flex flex-col items-center gap-1 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100 transition-colors">
-          <div className="p-3 bg-slate-100 dark:bg-slate-800/60 rounded-full">
-            <RotateCcw size={22} />
+          className="gs-nav-btn flex flex-col items-center gap-1">
+          <div className="gs-nav-icon p-3 rounded-full">
+            <RotateCcw size={22} className="text-slate-300" />
           </div>
-          <span className="text-[9px] font-black uppercase tracking-wider">Retry</span>
+          <span className="gs-nav-label">Retry</span>
         </motion.button>
 
         {/* Hammer Tool */}
         <motion.button whileHover={inventory.hammer > 0 ? { y: -3 } : {}} whileTap={inventory.hammer > 0 ? { scale: 0.9 } : {}}
           onClick={() => inventory.hammer > 0 && setIsHammerActive(!isHammerActive)}
           disabled={inventory.hammer <= 0}
-          className={cn(
-            'flex flex-col items-center gap-1 transition-all',
-            isHammerActive ? 'text-blue-500 scale-110 drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]' : 'text-slate-500',
-            inventory.hammer <= 0 && 'opacity-30 grayscale cursor-not-allowed'
-          )}>
-          <div className={cn("p-3 bg-slate-100 dark:bg-slate-800/60 rounded-full relative", isHammerActive && "bg-blue-500/10 border-2 border-blue-500/20")}>
-            <HammerIcon size={22} fill={isHammerActive ? "currentColor" : "none"} />
+          className={cn('gs-nav-btn flex flex-col items-center gap-1', inventory.hammer <= 0 && 'opacity-30 cursor-not-allowed')}>
+          <div className={cn('p-3 rounded-full relative', isHammerActive ? 'gs-nav-icon-hammer-active' : 'gs-nav-icon')}>
+            <HammerIcon size={22} fill={isHammerActive ? '#3b82f6' : 'none'} className={isHammerActive ? 'text-blue-400' : 'text-slate-300'} />
             {inventory.hammer > 0 && (
-               <span className="absolute -top-1 -right-1 bg-amber-500 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-md">
-                {inventory.hammer}
-              </span>
+              <span className="gs-badge-amber absolute -top-1 -right-1">{inventory.hammer}</span>
             )}
           </div>
-          <span className="text-[9px] font-black uppercase tracking-wider">Hammer</span>
+          <span className="gs-nav-label">Hammer</span>
         </motion.button>
 
         {/* Sound Toggle */}
         <motion.button whileHover={{ y: -3 }} whileTap={{ scale: 0.9 }} onClick={toggleSound}
-          className="flex flex-col items-center gap-1 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100 transition-colors">
-          <div className="p-3 bg-slate-100 dark:bg-slate-800/60 rounded-full">
-            {soundEnabled ? <Volume2 size={22} className="text-blue-500 dark:text-blue-400" /> : <VolumeX size={22} />}
+          className="gs-nav-btn flex flex-col items-center gap-1">
+          <div className={cn('p-3 rounded-full', soundEnabled ? 'gs-nav-icon-active' : 'gs-nav-icon')}>
+            {soundEnabled ? <Volume2 size={22} className="text-cyan-400" style={{ filter: 'drop-shadow(0 0 6px #06b6d4)' }} /> : <VolumeX size={22} className="text-slate-400" />}
           </div>
-          <span className="text-[9px] font-black uppercase tracking-wider">Sound</span>
+          <span className="gs-nav-label">Sound</span>
         </motion.button>
       </div>
 
@@ -595,7 +602,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onHome }) => {
             <motion.div
               initial={{ scale: 0.8, y: 20 }}
               animate={{ scale: 1, y: 0 }}
-              className="w-full max-w-sm bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 text-center shadow-2xl border border-white/20"
+              className="gs-stage-clear-modal w-full max-w-sm rounded-[2.5rem] p-8 text-center"
             >
               <motion.div 
                 animate={{ rotate: [0, 10, -10, 0], scale: [1, 1.2, 1] }} 
@@ -604,10 +611,10 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onHome }) => {
               >
                 🏆
               </motion.div>
-              <h2 className="text-4xl font-black text-slate-900 dark:text-white mb-2 tracking-tighter">STAGE CLEAR!</h2>
-              <p className="text-slate-500 font-bold mb-8 uppercase tracking-widest text-xs">Level {journeyLevel.id} Complete</p>
-              
-              <div className="bg-slate-50 dark:bg-slate-800/50 rounded-3xl p-4 mb-8">
+              <h2 className="text-4xl font-black text-white mb-2 tracking-tighter" style={{ textShadow: '0 0 20px rgba(99,102,241,0.5)' }}>STAGE CLEAR!</h2>
+              <p className="font-bold mb-8 uppercase tracking-widest text-xs" style={{ color: 'rgba(148,163,184,0.7)' }}>Level {journeyLevel.id} Complete</p>
+
+              <div className="rounded-3xl p-4 mb-8" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}>
                  <div className="flex flex-col items-center gap-1">
                   <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">Stage Cleared!</p>
                   <div className="flex items-center gap-2 mb-4">

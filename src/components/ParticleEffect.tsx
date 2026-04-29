@@ -103,19 +103,21 @@ export const LineClearBurst: React.FC<LineClearBurstProps> = ({
           const rad = (p.angle * Math.PI) / 180;
           const tx = Math.cos(rad) * p.distance;
           const ty = Math.sin(rad) * p.distance;
+          const isCircle = Math.random() > 0.5;
           return (
             <motion.div
               key={p.id}
               initial={{ x: p.x, y: p.y, scale: 1, opacity: 1 }}
               animate={{ x: p.x + tx, y: p.y + ty, scale: 0, opacity: 0 }}
               exit={{}}
-              transition={{ duration: 0.7, ease: 'easeOut' }}
+              transition={{ duration: 0.75, ease: 'easeOut' }}
               style={{
                 position: 'absolute',
                 width: p.size,
                 height: p.size,
-                borderRadius: Math.random() > 0.5 ? '50%' : '2px',
+                borderRadius: isCircle ? '50%' : '3px',
                 backgroundColor: p.color,
+                boxShadow: `0 0 ${p.size * 2}px ${p.color}, 0 0 ${p.size * 4}px ${p.color}66`,
                 transform: 'translate(-50%, -50%)',
               }}
             />
@@ -125,6 +127,33 @@ export const LineClearBurst: React.FC<LineClearBurstProps> = ({
     </div>
   );
 };
+
+/* ─── Floating XP text ─────────────────────────────────────────── */
+interface FloatingXPProps {
+  amount: number;
+  x: number;
+  y: number;
+  onDone: () => void;
+}
+
+export const FloatingXP: React.FC<FloatingXPProps> = ({ amount, x, y, onDone }) => (
+  <motion.div
+    initial={{ opacity: 1, y: 0, scale: 0.8, x: '-50%' }}
+    animate={{ opacity: 0, y: -70, scale: 1.2, x: '-50%' }}
+    transition={{ duration: 1.2, ease: 'easeOut' }}
+    onAnimationComplete={onDone}
+    className="fixed pointer-events-none z-[9999] font-black text-sm"
+    style={{
+      left: x,
+      top: y,
+      color: '#fbbf24',
+      textShadow: '0 0 12px #fbbf24, 0 0 24px #f59e0b',
+      letterSpacing: '0.05em',
+    }}
+  >
+    +{amount} XP
+  </motion.div>
+);
 
 /* ─── Combo lightning flash ────────────────────────────────────── */
 interface ComboFlashProps {
@@ -149,12 +178,12 @@ export const ComboFlash: React.FC<ComboFlashProps> = ({ combo }) => {
       {visible && (
         <motion.div
           key={combo}
-          initial={{ opacity: 0.7 }}
+          initial={{ opacity: 0.85 }}
           animate={{ opacity: 0 }}
-          transition={{ duration: 0.4 }}
+          transition={{ duration: 0.45 }}
           className="fixed inset-0 pointer-events-none z-[50]"
           style={{
-            background: 'radial-gradient(ellipse at center, rgb(var(--color-primary) / 0.25) 0%, transparent 70%)',
+            background: 'radial-gradient(ellipse at center, rgba(99,102,241,0.30) 0%, rgba(59,130,246,0.15) 40%, transparent 70%)',
           }}
         />
       )}
