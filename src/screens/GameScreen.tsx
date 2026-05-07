@@ -25,7 +25,71 @@ function cn(...classes: any[]) {
   return classes.filter(Boolean).filter(c => typeof c === 'string').join(' ');
 }
 
+/* ── Space Starfield Background — pure CSS, zero JS runtime cost ── */
+const STARS = Array.from({ length: 35 }, (_, i) => ({
+  id: i,
+  x: ((i * 37 + 13) % 100),          // deterministic spread
+  startY: ((i * 53 + 7) % 95),        // start position 0–95%
+  size: (i % 3 === 0) ? 2 : (i % 3 === 1) ? 1.5 : 1,
+  duration: 10 + (i % 8) * 2.5,       // 10–27.5s
+  delay: -((i * 3.7) % 20),           // pre-offset so stars are already visible
+  opacity: 0.15 + (i % 5) * 0.08,    // 0.15–0.47
+  twinkle: i % 4 === 0,               // every 4th star twinkles
+}));
 
+const SHOOTING_STARS = Array.from({ length: 4 }, (_, i) => ({
+  id: i,
+  x: 15 + i * 22,
+  y: 5 + i * 8,
+  delay: i * 7 + 2,
+  duration: 3 + i * 1.5,
+}));
+
+const StarField: React.FC = React.memo(() => (
+  <div
+    aria-hidden="true"
+    className="absolute inset-0 overflow-hidden pointer-events-none"
+    style={{ zIndex: 0, contain: 'strict' }}
+  >
+    {/* Drifting stars */}
+    {STARS.map(star => (
+      <div
+        key={star.id}
+        className="absolute rounded-full bg-white"
+        style={{
+          left: `${star.x}%`,
+          top: `${star.startY}%`,
+          width: `${star.size}px`,
+          height: `${star.size}px`,
+          willChange: 'transform, opacity',
+          animation: star.twinkle
+            ? `star-twinkle ${star.duration * 0.6}s ${star.delay}s ease-in-out infinite`
+            : `star-fall ${star.duration}s ${star.delay}s linear infinite`,
+          opacity: star.opacity,
+          boxShadow: star.size >= 2 ? `0 0 ${star.size * 2}px rgba(147,197,253,0.6)` : 'none',
+        }}
+      />
+    ))}
+
+    {/* Shooting stars */}
+    {SHOOTING_STARS.map(s => (
+      <div
+        key={s.id}
+        className="absolute rounded-full"
+        style={{
+          left: `${s.x}%`,
+          top: `${s.y}%`,
+          width: '60px',
+          height: '1.5px',
+          background: 'linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(147,197,253,0.8) 50%, rgba(255,255,255,0.95) 100%)',
+          willChange: 'transform, opacity',
+          animation: `shooting-star ${s.duration}s ${s.delay}s ease-in infinite`,
+        }}
+      />
+    ))}
+  </div>
+));
+StarField.displayName = 'StarField';
 
 
 
@@ -365,7 +429,9 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onHome }) => {
   };
 
   return (
-    <div className="gs-root flex flex-col items-center h-full px-3 pt-2 overflow-hidden safe-area-inset relative" style={{ background: 'linear-gradient(160deg, #0F172A 0%, #0d1f5c 50%, #1E3A8A 100%)', isolation: 'isolate' }}>
+    <div className="gs-root flex flex-col items-center h-full px-3 pt-2 overflow-hidden safe-area-inset relative" style={{ background: 'linear-gradient(160deg, #0F172A 0%, #050d1f 45%, #0a1a3e 100%)', isolation: 'isolate' }}>
+      {/* Space Starfield — CSS-only, GPU composited */}
+      <StarField />
       {/* Ambient orbs */}
       <div className="gs-orb gs-orb-top absolute pointer-events-none" />
       <div className="gs-orb gs-orb-right absolute pointer-events-none" />
