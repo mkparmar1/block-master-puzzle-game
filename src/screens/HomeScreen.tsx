@@ -108,7 +108,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     : 100;
 
   return (
-    <div className="home-screen-root flex flex-col items-center justify-start min-h-full px-4 pb-6 relative overflow-y-auto overflow-x-hidden" style={{ background: 'linear-gradient(160deg, #0F172A 0%, #0d1f5c 45%, #1E3A8A 100%)', isolation: 'isolate' }}>
+    <div className="home-screen-root flex flex-col items-center justify-start h-full px-4 pb-6 relative overflow-y-auto overflow-x-hidden" style={{ background: 'linear-gradient(160deg, #0F172A 0%, #0d1f5c 45%, #1E3A8A 100%)', isolation: 'isolate' }}>
 
       {/* ── Deep Gradient Background ────────────────────────── */}
       <div className="home-bg-gradient absolute inset-0 pointer-events-none" />

@@ -28,7 +28,7 @@ export const DailyChallengeScreen: React.FC<DailyChallengeScreenProps> = ({ onBa
   };
 
   return (
-    <div className="flex flex-col min-h-full py-5 px-5 relative safe-area-inset overflow-y-auto overflow-x-hidden no-scrollbar" style={{ background: 'linear-gradient(160deg, #0F172A 0%, #0d1f5c 50%, #1E3A8A 100%)', isolation: 'isolate' }}>
+    <div className="flex flex-col h-full py-5 px-5 relative safe-area-inset overflow-y-auto overflow-x-hidden no-scrollbar" style={{ background: 'linear-gradient(160deg, #0F172A 0%, #0d1f5c 50%, #1E3A8A 100%)', isolation: 'isolate' }}>
       {/* Ambient Orbs */}
       <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-blue-500/20 blur-[100px] pointer-events-none z-[-1]" />
       <div className="absolute bottom-[20%] left-[-20%] w-[60%] h-[60%] rounded-full bg-indigo-500/20 blur-[120px] pointer-events-none z-[-1]" />

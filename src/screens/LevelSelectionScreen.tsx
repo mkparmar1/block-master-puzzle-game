@@ -105,7 +105,7 @@ export const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({ onBa
 
   return (
     <div
-      className="ms-root flex flex-col items-center justify-start min-h-full px-4 pb-8 relative overflow-y-auto overflow-x-hidden"
+      className="ms-root flex flex-col items-center justify-start h-full px-4 pb-8 relative overflow-y-auto overflow-x-hidden"
       style={{ background: 'linear-gradient(160deg, #0F172A 0%, #0d1f5c 50%, #1E3A8A 100%)', isolation: 'isolate' }}
     >
       {/* Background layers */}
