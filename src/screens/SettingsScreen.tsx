@@ -87,18 +87,18 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({ onBack }) => {
   };
 
   return (
-    <div className="flex flex-col h-full py-5 px-5 relative safe-area-inset overflow-y-auto overflow-x-hidden no-scrollbar" style={{ background: 'linear-gradient(160deg, #0F172A 0%, #0d1f5c 50%, #1E3A8A 100%)', isolation: 'isolate' }}>
-      {/* Ambient orbs */}
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-blue-500/20 blur-[80px] pointer-events-none z-[-1]" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-purple-500/15 blur-[100px] pointer-events-none z-[-1]" />
-      
+    <div className="screen-scroll safe-area-inset" style={{ background: 'linear-gradient(160deg, #0F172A 0%, #0d1f5c 50%, #1E3A8A 100%)', isolation: 'isolate' }}>
+      {/* Ambient orbs (fixed so they don't scroll) */}
+      <div className="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-blue-500/20 blur-[80px] pointer-events-none z-0" />
+      <div className="fixed bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-purple-500/15 blur-[100px] pointer-events-none z-0" />
+
       {/* Glowing dots background */}
-      <div className="absolute inset-0 pointer-events-none opacity-20 z-[-1]" style={{
+      <div className="fixed inset-0 pointer-events-none opacity-20 z-0" style={{
         backgroundImage: 'radial-gradient(circle at 20px 20px, rgba(255,255,255,0.15) 2px, transparent 0)',
         backgroundSize: '80px 80px'
       }} />
 
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md mx-auto relative z-10 pb-10">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md mx-auto relative z-10 px-5 pt-5 pb-safe">
 
         {/* Header */}
         <div className="flex items-center justify-between mb-8 mt-2 w-full">

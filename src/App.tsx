@@ -119,12 +119,12 @@ export default function App() {
       {/* Screen content — only mount after splash has dismissed to prevent double-flash */}
       <AnimatePresence>
         {!isSplashVisible && currentScreen === 'tutorial' && (
-          <motion.div key="tutorial" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0">
+          <motion.div key="tutorial" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="absolute inset-0 screen-transition" style={{ background: '#0F172A' }}>
             <TutorialScreen onComplete={handleTutorialComplete} />
           </motion.div>
         )}
         {!isSplashVisible && currentScreen === 'home' && (
-          <motion.div key="home" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, x: -20 }} className="absolute inset-0">
+          <motion.div key="home" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="absolute inset-0 screen-transition" style={{ background: '#0F172A' }}>
             <HomeScreen
               onStart={handleGoToSelection}
               onSettings={handleSettings}
@@ -136,41 +136,42 @@ export default function App() {
           </motion.div>
         )}
         {!isSplashVisible && currentScreen === 'level-selection' && (
-          <motion.div key="selection" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="absolute inset-0">
+          <motion.div key="selection" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.22 }} className="absolute inset-0 screen-transition" style={{ background: '#0F172A' }}>
             <LevelSelectionScreen onBack={handleHome} onStart={handleStartGame} />
           </motion.div>
         )}
         {!isSplashVisible && currentScreen === 'game' && (
-          <motion.div key="game" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0">
+          <motion.div key="game" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="absolute inset-0 screen-transition" style={{ background: '#0F172A' }}>
             <GameScreen onHome={handleHome} />
           </motion.div>
         )}
         {!isSplashVisible && currentScreen === 'settings' && (
-          <motion.div key="settings" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="absolute inset-0">
+          <motion.div key="settings" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.22 }} className="absolute inset-0 screen-transition" style={{ background: '#0F172A' }}>
             <SettingsScreen onBack={handleHome} />
           </motion.div>
         )}
         {!isSplashVisible && currentScreen === 'leaderboard' && (
-          <motion.div key="leaderboard" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="absolute inset-0">
+          <motion.div key="leaderboard" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.22 }} className="absolute inset-0 screen-transition" style={{ background: '#0F172A' }}>
             <LeaderboardScreen onBack={handleHome} />
           </motion.div>
         )}
         {!isSplashVisible && currentScreen === 'daily' && (
-          <motion.div key="daily" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="absolute inset-0">
+          <motion.div key="daily" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.22 }} className="absolute inset-0 screen-transition" style={{ background: '#0F172A' }}>
             <DailyChallengeScreen onBack={handleHome} onStart={handleStartGame} />
           </motion.div>
         )}
         {!isSplashVisible && currentScreen === 'quests' && (
-          <motion.div key="quests" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }} className="absolute inset-0">
+          <motion.div key="quests" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }} transition={{ duration: 0.22 }} className="absolute inset-0 screen-transition" style={{ background: '#0F172A' }}>
             <QuestsScreen onBack={handleHome} />
           </motion.div>
         )}
         {!isSplashVisible && currentScreen === 'journey' && (
-          <motion.div key="journey" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="absolute inset-0">
+          <motion.div key="journey" initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.97 }} transition={{ duration: 0.22 }} className="absolute inset-0 screen-transition" style={{ background: '#0F172A' }}>
             <JourneyScreen onBack={handleHome} onSelectLevel={handleStartJourneyLevel} />
           </motion.div>
         )}
       </AnimatePresence>
+
 
       {/* Splash Screen — rendered on top of everything, screens are hidden until this exits */}
       <AnimatePresence>

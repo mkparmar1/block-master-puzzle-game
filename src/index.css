@@ -8,6 +8,7 @@
     margin: 0;
     padding: 0;
     overflow: hidden;
+    background: #0F172A;
   }
 
   body {
@@ -26,6 +27,7 @@
     -webkit-tap-highlight-color: transparent;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: none;
+    background: #0F172A;
   }
 
   #root {
@@ -34,6 +36,7 @@
     width: 100%;
     overflow: hidden;
     position: relative;
+    background: #0F172A;
   }
 
   /* ── Theme CSS Variables (defaults = Ocean Deep) ─────────────── */
@@ -73,13 +76,11 @@
   }
 
   body {
-    @apply bg-slate-50;
+    background: #0F172A;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     background-image: 
-      radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
-      radial-gradient(at 100% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
-      radial-gradient(at 100% 100%, rgba(147, 51, 234, 0.1) 0px, transparent 50%),
-      radial-gradient(at 0% 100%, rgba(79, 70, 229, 0.1) 0px, transparent 50%);
+      radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.08) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(59, 130, 246, 0.08) 0px, transparent 50%);
   }
 
   .dark body {
@@ -202,6 +203,24 @@
     padding-bottom: max(env(safe-area-inset-bottom), 4px);
     padding-left: env(safe-area-inset-left);
     padding-right: env(safe-area-inset-right);
+  }
+
+  /* Scrollable screen container — overrides body's position:fixed for inner scrolling */
+  .screen-scroll {
+    position: absolute;
+    inset: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+  }
+
+  /* GPU compositing for transition containers — prevents repaint flicker */
+  .screen-transition {
+    will-change: opacity, transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform: translateZ(0);
   }
 
   .pb-safe {

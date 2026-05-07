@@ -405,7 +405,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onHome }) => {
             transition={{ type: 'spring', damping: 15, stiffness: 300 }}
             className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-sm pointer-events-none"
           >
-            <div className="bg-white dark:bg-slate-900 rounded-[3rem] p-8 text-center border-4 border-amber-400 shadow-[0_0_50px_rgba(251,191,36,0.4)]">
+            <div className="rounded-[3rem] p-8 text-center border-4 border-amber-400 shadow-[0_0_50px_rgba(251,191,36,0.4)]" style={{ background: '#0f172a' }}>
               <motion.div
                 animate={{ rotate: [0, -10, 10, -10, 10, 0], scale: [0.9, 1.1, 1] }}
                 transition={{ duration: 1, repeat: 3, ease: 'easeInOut' }}
@@ -619,9 +619,9 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onHome }) => {
                   <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">Stage Cleared!</p>
                   <div className="flex items-center gap-2 mb-4">
                     <Star size={20} fill="#FFD740" className="text-amber-400" />
-                    <p className="text-2xl font-black text-slate-900 dark:text-white">+10 Stars</p>
+                    <p className="text-2xl font-black text-white">+10 Stars</p>
                   </div>
-                  <div className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                  <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: '#1e293b' }}>
                      <motion.div initial={{ width: 0 }} animate={{ width: '100%' }} className="h-full bg-blue-500" transition={{ delay: 0.5, duration: 1 }} />
                   </div>
                </div>
