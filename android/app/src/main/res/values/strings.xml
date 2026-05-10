@@ -2,6 +2,6 @@
 <resources>
     <string name="app_name">Block Master</string>
     <string name="title_activity_main">Block Master</string>
-    <string name="package_name">com.blockmaster.app</string>
-    <string name="custom_url_scheme">com.blockmaster.app</string>
+    <string name="package_name">com.blockmasterpuzzle</string>
+    <string name="custom_url_scheme">com.blockmasterpuzzle</string>
 </resources>

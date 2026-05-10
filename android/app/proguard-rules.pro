@@ -8,7 +8,7 @@
 -dontwarn com.getcapacitor.**
 
 # Keep all plugin classes
--keep class com.blockmaster.app.** { *; }
+-keep class com.blockmasterpuzzle.** { *; }
 
 # Keep WebView JavaScript interface methods
 -keepclassmembers class * {

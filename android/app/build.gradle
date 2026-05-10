@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace = "com.blockmaster.app"
+    namespace = "com.blockmasterpuzzle"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.blockmaster.app"
+        applicationId "com.blockmasterpuzzle"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -16,8 +16,17 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    signingConfigs {
+        release {
+            storeFile file('release-key.jks')
+            storePassword 'blockmaster123'
+            keyAlias 'blockmaster-alias'
+            keyPassword 'blockmaster123'
+        }
+    }
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'

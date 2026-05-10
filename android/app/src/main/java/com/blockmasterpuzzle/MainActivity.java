@@ -1,4 +1,4 @@
-package com.blockmaster.app;
+package com.blockmasterpuzzle;
 
 import android.os.Bundle;
 import androidx.core.view.WindowCompat;

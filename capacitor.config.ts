@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.blockmaster.app',
+  appId: 'com.blockmasterpuzzle',
   appName: 'Block Master',
   webDir: 'dist',
   plugins: {

@@ -304,6 +304,16 @@ src/
 - **Hardware acceleration** — `will-change` and GPU-composited transforms on animated elements
 - **Preloaded audio pool** — sounds loaded at mount, cloned on play for zero-latency audio
 
+## 🔑 Release Signing Credentials
+
+> [!IMPORTANT]
+> These credentials are required to build and update the app on the Google Play Store. **Do not lose the `.jks` file.**
+
+- **Keystore Path**: `android/app/release-key.jks`
+- **Keystore Password**: `blockmaster123`
+- **Key Alias**: `blockmaster-alias`
+- **Key Password**: `blockmaster123`
+
 ---
 
 ## 📄 License
