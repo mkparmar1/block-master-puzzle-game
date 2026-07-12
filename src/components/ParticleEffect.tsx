@@ -5,6 +5,7 @@
 
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+// v2 – force HMR cache refresh
 
 /** A single floating particle emitted on events */
 interface Particle {

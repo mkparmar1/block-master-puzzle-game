@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Achievement } from '../lib/achievements';
 
@@ -13,7 +13,7 @@ interface AchievementToastProps {
 }
 
 export const AchievementToast: React.FC<AchievementToastProps> = ({ achievements, onDone }) => {
-  const [current, setCurrent] = React.useState(0);
+  const [current, setCurrent] = useState(0);
 
   useEffect(() => {
     if (achievements.length === 0) return;

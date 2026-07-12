@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'motion/react';
 import { SvgIcon } from '../components/SvgIcon';
 import { SvgButton } from '../components/SvgButton';
 import { SvgCard } from '../components/SvgCard';
 import { SvgBadge } from '../components/SvgBadge';
+import { SvgProgressBar } from '../components/SvgProgressBar';
 import { useGameStore } from '../store/useGameStore';
 import { usePlayerStore, getRankForXP, getNextRank } from '../store/usePlayerStore';
 import { StarShop } from '../components/StarShop';
@@ -102,7 +103,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
 }) => {
   const { highScore, dailyStreak } = useGameStore();
   const { xp, stars } = usePlayerStore();
-  const [showShop, setShowShop] = React.useState(false);
+  const [showShop, setShowShop] = useState(false);
 
   const rank = getRankForXP(xp);
   const nextRank = getNextRank(xp);

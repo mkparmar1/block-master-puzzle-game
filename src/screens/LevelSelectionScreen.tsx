@@ -178,7 +178,7 @@ export const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({ onBa
         {/* ── Challenge Level ── */}
         <section className="mb-8">
           <div className="ms-section-label flex items-center gap-2 mb-3">
-            <Zap size={13} />
+            <SvgIcon id="zap" size={13} />
             CHALLENGE LEVEL
           </div>
 

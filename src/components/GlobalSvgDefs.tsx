@@ -122,6 +122,15 @@ export const GlobalSvgDefs: React.FC = () => {
           <stop offset="100%" stopColor="#1e293b" />
         </radialGradient>
 
+        {/* Pink Magenta — dominant color in Jungle Jewel reference */}
+        <radialGradient id="gem-pink" cx="30%" cy="25%" r="75%">
+          <stop offset="0%" stopColor="#fce4f8" />
+          <stop offset="18%" stopColor="#f472b6" />
+          <stop offset="50%" stopColor="#db2777" />
+          <stop offset="80%" stopColor="#9d174d" />
+          <stop offset="100%" stopColor="#4a0728" />
+        </radialGradient>
+
         {/* Specular Glare overlay */}
         <linearGradient id="specular-glare" x1="0%" y1="0%" x2="0%" y2="100%">
           <stop offset="0%" stopColor="#ffffff" stopOpacity="0.75" />

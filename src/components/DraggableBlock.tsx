@@ -290,9 +290,9 @@ export const DraggableBlock: React.FC<DraggableBlockProps> = ({
           zIndex: 100,
           filter: `drop-shadow(0px 24px 36px rgba(0,0,0,0.65)) drop-shadow(0px 0px 15px ${block.color}cc)`,
         }}
-        animate={isDragging ? undefined : { scale: 0.65 }}
+        animate={isDragging ? undefined : { scale: 0.65, filter: 'none' }}
         transition={!isDragging ? {} : { type: 'spring', stiffness: 800, damping: 35 }}
-        style={{ touchAction: 'none' }}
+        style={{ touchAction: 'none', filter: 'none' }}
         className={cn(
           'cursor-grab active:cursor-grabbing z-50 flex items-center justify-center relative',
           isDragging ? 'opacity-100' : 'transition-colors'

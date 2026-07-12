@@ -12,6 +12,7 @@ import { DraggableBlock } from '../components/DraggableBlock';
 import { ScoreBoard } from '../components/ScoreBoard';
 import { AchievementToast } from '../components/AchievementToast';
 import { LineClearBurst, ComboFlash, BoardClearFlash, PlaceRipple, FloatingXP } from '../components/ParticleEffect';
+import { JungleJewelDefs } from '../components/Cell';
 import { useThemeStore } from '../store/useThemeStore';
 import { canPlaceBlock } from '../game/gridLogic';
 import { StarShop } from '../components/StarShop';
@@ -432,13 +433,17 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onHome }) => {
     if (undoMove()) { vibrate(60); resetIdleTimer(); }
   };
 
+  const highScore = useGameStore((s) => s.highScore);
+
   return (
-    <div className="gs-root flex flex-col items-center h-full px-3 pt-2 overflow-hidden safe-area-inset relative" style={{ background: 'linear-gradient(160deg, #0F172A 0%, #050d1f 45%, #0a1a3e 100%)', isolation: 'isolate' }}>
-      {/* Space Starfield — CSS-only, GPU composited */}
-      <StarField />
-      {/* Ambient orbs */}
-      <div className="gs-orb gs-orb-top absolute pointer-events-none" />
-      <div className="gs-orb gs-orb-right absolute pointer-events-none" />
+    <div className="gs-jungle-root flex flex-col items-center h-full overflow-hidden safe-area-inset relative" style={{ isolation: 'isolate' }}>
+      {/* Inline SVG defs for Jungle Jewel gem gradients */}
+      <JungleJewelDefs />
+
+      {/* Jungle leaf borders */}
+      <div className="gs-jungle-leaves-left" aria-hidden="true" />
+      <div className="gs-jungle-leaves-right" aria-hidden="true" />
+
       {/* Achievement Toast */}
       <AchievementToast achievements={newAchievements} onDone={clearNewAchievements} />
 
@@ -499,24 +504,53 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onHome }) => {
         style={{ background: `rgb(var(--color-primary) / 0.2)` }}
       />
 
-      {/* Header - Isolate ScoreBoard at the top */}
-      <div className="w-full relative z-10 flex flex-col items-center">
-        <ScoreBoard />
-        
-        {/* Time Attack Massive Overlay */}
+      {/* ── Jungle HUD Bar ─────────────────────────────────────── */}
+      <div className="w-full relative z-10 px-3 pt-2 pb-1">
+        <div className="gs-jungle-hud flex items-center justify-between gap-2 relative z-10">
+          {/* Trophy + Best Score */}
+          <div className="flex items-center gap-2">
+            <span className="text-2xl" aria-hidden="true">🏆</span>
+            <div className="gs-jungle-score-box">
+              <div className="gs-jungle-score-value">{highScore}</div>
+              <div className="gs-jungle-score-label">Best</div>
+            </div>
+          </div>
+
+          {/* Current Score — center */}
+          <div className="gs-jungle-score-box" style={{ minWidth: 88 }}>
+            <div className="gs-jungle-score-value">{score}</div>
+            <div className="gs-jungle-score-label">Score</div>
+          </div>
+
+          {/* Pause / Home button — red with gold border */}
+          <motion.button
+            whileTap={{ scale: 0.9 }}
+            onClick={onHome}
+            id="gs-pause-btn"
+            className="gs-jungle-pause-btn"
+            aria-label="Menu"
+          >
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="white">
+              <rect x="4" y="3" width="4" height="14" rx="1.5" />
+              <rect x="12" y="3" width="4" height="14" rx="1.5" />
+            </svg>
+          </motion.button>
+        </div>
+
+        {/* Time Attack timer */}
         {isDailyChallenge && timeLeft !== null && (
-          <motion.div 
+          <motion.div
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             className={cn(
-              "mt-2 mb-6 px-8 py-3 rounded-[2rem] border-2 shadow-2xl backdrop-blur-md text-center flex flex-col items-center",
-              timeLeft <= 10 
-                ? "border-red-500 bg-red-500/20 text-red-500 animate-pulse" 
-                : "border-amber-400 bg-slate-900/80 text-amber-400 shadow-[0_0_20px_rgba(251,191,36,0.25)]"
+              "mt-2 px-6 py-2 rounded-2xl border-2 text-center flex items-center justify-center gap-3",
+              timeLeft <= 10
+                ? "border-red-500 bg-red-900/30 text-red-400 animate-pulse"
+                : "border-amber-500 bg-amber-900/20 text-amber-400"
             )}
           >
-            <span className="text-[10px] uppercase font-black tracking-[0.3em] opacity-80">Time Attack</span>
-            <span className="text-4xl font-black tabular-nums tracking-tighter">
+            <span className="text-xs font-black uppercase tracking-widest opacity-80">⏱ Time Attack</span>
+            <span className="text-2xl font-black tabular-nums">
               {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
             </span>
           </motion.div>
@@ -524,7 +558,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onHome }) => {
       </div>
 
       {/* Grid Area — takes all remaining space */}
-      <div className="flex-1 min-h-0 flex items-center justify-center w-full max-w-md px-1 relative">
+      <div className="flex-1 min-h-0 flex items-center justify-center w-full px-3 relative">
         <AnimatePresence>
           {showComboBanner && combo > 1 && (
             <motion.div key="combo" initial={{ scale: 0, rotate: -20 }} animate={{ scale: 1, rotate: 0 }} exit={{ scale: 0 }}
@@ -542,7 +576,6 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onHome }) => {
             </motion.div>
           )}
 
-          {/* Hint button */}
           {showHintButton && !isGameOver && (
             <motion.button key="hint-btn" initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0 }}
               onClick={handleShowHint}
@@ -565,13 +598,16 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onHome }) => {
           )}
         </AnimatePresence>
 
-        <div ref={gridRef} className={cn("w-full max-w-[88vw] sm:max-w-md", isHammerActive && "cursor-crosshair")}>
-          <Grid grid={grid} ghostBlock={ghostBlock} hintCell={hintCell} onCellClick={handleGridClick} />
+        {/* Board with jungle recessed frame */}
+        <div className="gs-jungle-board w-full">
+          <div ref={gridRef} className={cn("w-full", isHammerActive && "cursor-crosshair")}>
+            <Grid grid={grid} ghostBlock={ghostBlock} hintCell={hintCell} onCellClick={handleGridClick} />
+          </div>
         </div>
       </div>
 
-      {/* Block Tray */}
-      <div className="gs-tray relative flex-shrink-0 w-full max-w-md flex justify-around items-center rounded-[1.6rem] mt-1.5 sm:mt-3 py-2 sm:py-3" style={{ minHeight: '4.5rem' }}>
+      {/* Block Tray — jungle panel */}
+      <div className="gs-jungle-tray relative flex-shrink-0 w-full mx-3 flex justify-around items-center mt-2 py-3 px-2" style={{ minHeight: '5rem', maxWidth: 'calc(100% - 24px)' }}>
         <AnimatePresence mode="sync">
           {localBlocks.map((block) => (
             <motion.div key={block.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
@@ -591,11 +627,11 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onHome }) => {
         </AnimatePresence>
       </div>
 
-      {/* Ergonomic Bottom NavBar */}
-      <div className="w-full max-w-md mt-1.5 sm:mt-3 mb-1 relative z-10">
-        <SvgCard className="px-2 sm:px-4 py-2" variant="stone">
+      {/* Ergonomic Bottom NavBar — kept exactly as-is, just re-styled container */}
+      <div className="w-full px-3 mt-2 mb-2 relative z-10">
+        <div className="gs-jungle-tray px-2 py-1.5">
           <div className="flex justify-around items-center w-full pb-safe">
-            {/* Menu/Home */}
+            {/* Home */}
             <motion.button whileHover={{ y: -3 }} whileTap={{ scale: 0.9 }} onClick={onHome}
               className="gs-nav-btn flex flex-col items-center gap-1">
               <div className="gs-nav-icon p-2 rounded-full">
@@ -610,27 +646,23 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onHome }) => {
               className={cn('gs-nav-btn relative flex flex-col items-center gap-1', undoCharges <= 0 && 'opacity-40 cursor-not-allowed')}>
               <div className="gs-nav-icon p-2 rounded-full relative">
                 <SvgIcon id="undo" size={20} className="text-slate-300" />
-                {undoCharges > 0 && (
-                  <span className="gs-badge absolute -top-1 -right-1">{undoCharges}</span>
-                )}
+                {undoCharges > 0 && <span className="gs-badge absolute -top-1 -right-1">{undoCharges}</span>}
               </div>
               <span className="gs-nav-label">Undo</span>
             </motion.button>
 
-            {/* Refresh Tray */}
+            {/* Refresh */}
             <motion.button whileHover={{ y: -3 }} whileTap={{ scale: 0.9 }}
               onClick={handleRefresh} disabled={refreshCharges <= 0}
               className={cn('gs-nav-btn relative flex flex-col items-center gap-1', refreshCharges <= 0 && 'opacity-40 cursor-not-allowed')}>
               <div className={cn('p-2 rounded-full relative', refreshCharges > 0 ? 'gs-nav-icon-active' : 'gs-nav-icon')}>
                 <SvgIcon id="refresh" size={20} className={cn(refreshCharges > 0 ? 'text-amber-955' : 'text-slate-300', refreshCharges > 0 && 'animate-spin-slow')} />
-                {refreshCharges > 0 && (
-                  <span className="gs-badge absolute -top-1 -right-1">{refreshCharges}</span>
-                )}
+                {refreshCharges > 0 && <span className="gs-badge absolute -top-1 -right-1">{refreshCharges}</span>}
               </div>
               <span className="gs-nav-label">Refresh</span>
             </motion.button>
 
-            {/* Restart Game */}
+            {/* Retry */}
             <motion.button whileHover={{ y: -3, rotate: -45 }} whileTap={{ scale: 0.9 }} onClick={resetGame}
               className="gs-nav-btn flex flex-col items-center gap-1">
               <div className="gs-nav-icon p-2 rounded-full">
@@ -639,21 +671,19 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onHome }) => {
               <span className="gs-nav-label">Retry</span>
             </motion.button>
 
-            {/* Hammer Tool */}
+            {/* Hammer */}
             <motion.button whileHover={inventory.hammer > 0 ? { y: -3 } : {}} whileTap={inventory.hammer > 0 ? { scale: 0.9 } : {}}
               onClick={() => inventory.hammer > 0 && setIsHammerActive(!isHammerActive)}
               disabled={inventory.hammer <= 0}
               className={cn('gs-nav-btn flex flex-col items-center gap-1', inventory.hammer <= 0 && 'opacity-30 cursor-not-allowed')}>
               <div className={cn('p-2 rounded-full relative', isHammerActive ? 'gs-nav-icon-hammer-active' : 'gs-nav-icon')}>
                 <SvgIcon id="hammer" size={20} className={isHammerActive ? 'text-white' : 'text-slate-300'} />
-                {inventory.hammer > 0 && (
-                  <span className="gs-badge-amber absolute -top-1 -right-1">{inventory.hammer}</span>
-                )}
+                {inventory.hammer > 0 && <span className="gs-badge-amber absolute -top-1 -right-1">{inventory.hammer}</span>}
               </div>
               <span className="gs-nav-label">Hammer</span>
             </motion.button>
 
-            {/* Sound Toggle */}
+            {/* Sound */}
             <motion.button whileHover={{ y: -3 }} whileTap={{ scale: 0.9 }} onClick={toggleSound}
               className="gs-nav-btn flex flex-col items-center gap-1">
               <div className={cn('p-2 rounded-full', soundEnabled ? 'gs-nav-icon-active' : 'gs-nav-icon')}>
@@ -662,7 +692,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onHome }) => {
               <span className="gs-nav-label">Sound</span>
             </motion.button>
           </div>
-        </SvgCard>
+        </div>
       </div>
 
 
