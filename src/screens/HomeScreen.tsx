@@ -233,9 +233,27 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </div>
 
         {/* Title */}
-        <h1 className="home-title text-4xl sm:text-5xl font-black tracking-tight mb-1 leading-none">
-          BLOCK MASTER
-        </h1>
+        <div className="mb-1 select-none pointer-events-none">
+          <svg width="320" height="60" viewBox="0 0 320 60" style={{ overflow: 'visible' }}>
+            <text
+              x="50%"
+              y="45"
+              textAnchor="middle"
+              style={{
+                fontFamily: "'Outfit', 'Inter', system-ui, sans-serif",
+                fontSize: '40px',
+                fontWeight: 950,
+                fill: 'url(#gold-primary)',
+                stroke: '#451a03',
+                strokeWidth: '2.5px',
+                filter: 'url(#bevel-emboss)',
+                letterSpacing: '1px'
+              }}
+            >
+              BLOCK MASTER
+            </text>
+          </svg>
+        </div>
         <p className="home-subtitle tracking-[0.28em] text-[10px] font-bold uppercase mt-1">
           THE ULTIMATE CHALLENGE
         </p>

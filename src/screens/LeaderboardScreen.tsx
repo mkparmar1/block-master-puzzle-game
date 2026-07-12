@@ -66,7 +66,15 @@ const ScoreRow: React.FC<{ record: ScoreRecord; rank: number }> = ({ record, ran
     animate={{ opacity: 1, x: 0 }}
     transition={{ delay: 0.4 + rank * 0.05 }}
   >
-    <SvgCard className="p-4" variant={rank <= 3 ? 'gold-border' : 'stone'}>
+    <SvgCard
+      className="p-4"
+      variant={
+        rank === 1 ? 'gold-border' :
+        rank === 2 ? 'silver-border' :
+        rank === 3 ? 'bronze-border' :
+        'stone'
+      }
+    >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="w-8 flex items-center justify-center flex-shrink-0">

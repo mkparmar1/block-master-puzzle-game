@@ -54,7 +54,7 @@ function getGemstoneGradId(color: string): string {
   return 'gem-diamond';
 }
 
-/** Classic skin — premium 3D look with gold frame and crystal facets */
+/** Classic skin — brilliant 12-facet cut crystal gemstone with golden bezel claw frame */
 const ClassicCell: React.FC<{ color: string }> = ({ color }) => {
   const gradId = getGemstoneGradId(color);
   return (
@@ -66,28 +66,40 @@ const ClassicCell: React.FC<{ color: string }> = ({ color }) => {
     >
       <svg width="100%" height="100%" viewBox="0 0 40 40" style={{ display: 'block', overflow: 'visible' }}>
         {/* Drop shadow */}
-        <rect x="1" y="2.5" width="38" height="38" rx="6" fill="rgba(0,0,0,0.5)" />
+        <rect x="1" y="2.5" width="38" height="38" rx="6" fill="rgba(0,0,0,0.55)" />
         
-        {/* Golden outer bezel */}
+        {/* Golden outer bezel rim */}
         <rect x="1" y="1" width="38" height="38" rx="6" fill="url(#gold-primary)" stroke="url(#gold-trim-bevel)" strokeWidth="1" />
         
-        {/* Inset Gem Base */}
-        <rect x="3" y="3" width="34" height="34" rx="4.5" fill={`url(#${gradId})`} />
+        {/* Volumetric Gem Base */}
+        <rect x="3.5" y="3.5" width="33" height="33" rx="4.5" fill={`url(#${gradId})`} />
 
-        {/* Facet Cuts */}
-        {/* Top facet */}
-        <polygon points="3,3 37,3 28,11 12,11" fill="rgba(255,255,255,0.22)" />
-        {/* Bottom facet */}
-        <polygon points="3,37 37,37 28,29 12,29" fill="rgba(0,0,0,0.35)" />
-        {/* Left facet */}
-        <polygon points="3,3 12,11 12,29 3,37" fill="rgba(255,255,255,0.12)" />
-        {/* Right facet */}
-        <polygon points="37,3 28,11 28,29 37,37" fill="rgba(0,0,0,0.2)" />
-
-        {/* Specular Glare Arc */}
-        <rect x="4" y="4" width="32" height="15" rx="2.5" fill="url(#specular-glare)" pointerEvents="none" />
+        {/* ── 12 Facet Brilliant Cut Geometry ── */}
+        {/* Octagonal flat table (center) */}
+        <polygon points="12,12 28,12 32,16 32,24 28,28 12,28 8,24 8,16" fill="rgba(255,255,255,0.12)" />
         
-        {/* Shine Sparkle Star */}
+        {/* Surrounding crown facets */}
+        <polygon points="3.5,3.5 36.5,3.5 28,12 12,12" fill="rgba(255,255,255,0.2)" />
+        <polygon points="3.5,36.5 36.5,36.5 28,28 12,28" fill="rgba(0,0,0,0.3)" />
+        <polygon points="3.5,3.5 12,12 12,28 3.5,36.5" fill="rgba(255,255,255,0.08)" />
+        <polygon points="36.5,3.5 28,12 28,28 36.5,36.5" fill="rgba(0,0,0,0.18)" />
+
+        {/* Corner triangles */}
+        <polygon points="3.5,3.5 12,12 8,16" fill="rgba(255,255,255,0.25)" />
+        <polygon points="36.5,3.5 28,12 32,16" fill="rgba(255,255,255,0.15)" />
+        <polygon points="3.5,36.5 12,28 8,24" fill="rgba(0,0,0,0.22)" />
+        <polygon points="36.5,36.5 28,28 32,24" fill="rgba(0,0,0,0.32)" />
+
+        {/* Specular glare shine sheet */}
+        <rect x="4" y="4" width="32" height="12" rx="2" fill="url(#specular-glare)" pointerEvents="none" />
+        
+        {/* Claw Bezels at corners */}
+        <path d="M 3.5,3.5 L 7,7" stroke="url(#gold-bright)" strokeWidth="2" strokeLinecap="round" />
+        <path d="M 36.5,3.5 L 33,7" stroke="url(#gold-bright)" strokeWidth="2" strokeLinecap="round" />
+        <path d="M 3.5,36.5 L 7,33" stroke="url(#gold-bright)" strokeWidth="2" strokeLinecap="round" />
+        <path d="M 36.5,36.5 L 33,33" stroke="url(#gold-bright)" strokeWidth="2" strokeLinecap="round" />
+
+        {/* Star sparkle */}
         <path d="M30,7 L31.2,9.3 L33.5,10 L31.2,10.7 L30,13 L28.8,10.7 L26.5,10 L28.8,9.3 Z" fill="white" opacity="0.85" />
       </svg>
 

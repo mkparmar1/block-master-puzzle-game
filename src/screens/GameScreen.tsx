@@ -589,78 +589,80 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onHome }) => {
             </motion.div>
           ))}
         </AnimatePresence>
-
       </div>
 
       {/* Ergonomic Bottom NavBar */}
-      <div className="gs-navbar flex-shrink-0 flex justify-around items-center w-full max-w-md mt-1.5 sm:mt-3 mb-1 py-1.5 sm:py-2 px-3 sm:px-6 rounded-[1.6rem] relative z-10 pb-safe">
-        
-        {/* Menu/Home */}
-        <motion.button whileHover={{ y: -3 }} whileTap={{ scale: 0.9 }} onClick={onHome}
-          className="gs-nav-btn flex flex-col items-center gap-1">
-          <div className="gs-nav-icon p-3 rounded-full">
-            <SvgIcon id="home" size={22} />
-          </div>
-          <span className="gs-nav-label">Menu</span>
-        </motion.button>
+      <div className="w-full max-w-md mt-1.5 sm:mt-3 mb-1 relative z-10">
+        <SvgCard className="px-2 sm:px-4 py-2" variant="stone">
+          <div className="flex justify-around items-center w-full pb-safe">
+            {/* Menu/Home */}
+            <motion.button whileHover={{ y: -3 }} whileTap={{ scale: 0.9 }} onClick={onHome}
+              className="gs-nav-btn flex flex-col items-center gap-1">
+              <div className="gs-nav-icon p-2 rounded-full">
+                <SvgIcon id="home" size={20} />
+              </div>
+              <span className="gs-nav-label">Menu</span>
+            </motion.button>
 
-        {/* Undo */}
-        <motion.button whileHover={{ y: -3 }} whileTap={{ scale: 0.9 }}
-          onClick={handleUndo} disabled={undoCharges <= 0}
-          className={cn('gs-nav-btn relative flex flex-col items-center gap-1', undoCharges <= 0 && 'opacity-40 cursor-not-allowed')}>
-          <div className="gs-nav-icon p-3 rounded-full relative">
-            <SvgIcon id="undo" size={22} className="text-slate-300" />
-            {undoCharges > 0 && (
-              <span className="gs-badge absolute -top-1 -right-1">{undoCharges}</span>
-            )}
-          </div>
-          <span className="gs-nav-label">Undo</span>
-        </motion.button>
+            {/* Undo */}
+            <motion.button whileHover={{ y: -3 }} whileTap={{ scale: 0.9 }}
+              onClick={handleUndo} disabled={undoCharges <= 0}
+              className={cn('gs-nav-btn relative flex flex-col items-center gap-1', undoCharges <= 0 && 'opacity-40 cursor-not-allowed')}>
+              <div className="gs-nav-icon p-2 rounded-full relative">
+                <SvgIcon id="undo" size={20} className="text-slate-300" />
+                {undoCharges > 0 && (
+                  <span className="gs-badge absolute -top-1 -right-1">{undoCharges}</span>
+                )}
+              </div>
+              <span className="gs-nav-label">Undo</span>
+            </motion.button>
 
-        {/* Refresh Tray */}
-        <motion.button whileHover={{ y: -3 }} whileTap={{ scale: 0.9 }}
-          onClick={handleRefresh} disabled={refreshCharges <= 0}
-          className={cn('gs-nav-btn relative flex flex-col items-center gap-1', refreshCharges <= 0 && 'opacity-40 cursor-not-allowed')}>
-          <div className={cn('p-3 rounded-full relative', refreshCharges > 0 ? 'gs-nav-icon-active' : 'gs-nav-icon')}>
-            <SvgIcon id="refresh" size={22} className={cn(refreshCharges > 0 ? 'text-amber-950' : 'text-slate-300', refreshCharges > 0 && 'animate-spin-slow')} />
-            {refreshCharges > 0 && (
-              <span className="gs-badge absolute -top-1 -right-1">{refreshCharges}</span>
-            )}
-          </div>
-          <span className="gs-nav-label">Refresh</span>
-        </motion.button>
+            {/* Refresh Tray */}
+            <motion.button whileHover={{ y: -3 }} whileTap={{ scale: 0.9 }}
+              onClick={handleRefresh} disabled={refreshCharges <= 0}
+              className={cn('gs-nav-btn relative flex flex-col items-center gap-1', refreshCharges <= 0 && 'opacity-40 cursor-not-allowed')}>
+              <div className={cn('p-2 rounded-full relative', refreshCharges > 0 ? 'gs-nav-icon-active' : 'gs-nav-icon')}>
+                <SvgIcon id="refresh" size={20} className={cn(refreshCharges > 0 ? 'text-amber-955' : 'text-slate-300', refreshCharges > 0 && 'animate-spin-slow')} />
+                {refreshCharges > 0 && (
+                  <span className="gs-badge absolute -top-1 -right-1">{refreshCharges}</span>
+                )}
+              </div>
+              <span className="gs-nav-label">Refresh</span>
+            </motion.button>
 
-        {/* Restart Game */}
-        <motion.button whileHover={{ y: -3, rotate: -45 }} whileTap={{ scale: 0.9 }} onClick={resetGame}
-          className="gs-nav-btn flex flex-col items-center gap-1">
-          <div className="gs-nav-icon p-3 rounded-full">
-            <SvgIcon id="refresh" size={22} className="text-slate-300" />
-          </div>
-          <span className="gs-nav-label">Retry</span>
-        </motion.button>
+            {/* Restart Game */}
+            <motion.button whileHover={{ y: -3, rotate: -45 }} whileTap={{ scale: 0.9 }} onClick={resetGame}
+              className="gs-nav-btn flex flex-col items-center gap-1">
+              <div className="gs-nav-icon p-2 rounded-full">
+                <SvgIcon id="refresh" size={20} className="text-slate-300" />
+              </div>
+              <span className="gs-nav-label">Retry</span>
+            </motion.button>
 
-        {/* Hammer Tool */}
-        <motion.button whileHover={inventory.hammer > 0 ? { y: -3 } : {}} whileTap={inventory.hammer > 0 ? { scale: 0.9 } : {}}
-          onClick={() => inventory.hammer > 0 && setIsHammerActive(!isHammerActive)}
-          disabled={inventory.hammer <= 0}
-          className={cn('gs-nav-btn flex flex-col items-center gap-1', inventory.hammer <= 0 && 'opacity-30 cursor-not-allowed')}>
-          <div className={cn('p-3 rounded-full relative', isHammerActive ? 'gs-nav-icon-hammer-active' : 'gs-nav-icon')}>
-            <SvgIcon id="hammer" size={22} className={isHammerActive ? 'text-white' : 'text-slate-300'} />
-            {inventory.hammer > 0 && (
-              <span className="gs-badge-amber absolute -top-1 -right-1">{inventory.hammer}</span>
-            )}
-          </div>
-          <span className="gs-nav-label">Hammer</span>
-        </motion.button>
+            {/* Hammer Tool */}
+            <motion.button whileHover={inventory.hammer > 0 ? { y: -3 } : {}} whileTap={inventory.hammer > 0 ? { scale: 0.9 } : {}}
+              onClick={() => inventory.hammer > 0 && setIsHammerActive(!isHammerActive)}
+              disabled={inventory.hammer <= 0}
+              className={cn('gs-nav-btn flex flex-col items-center gap-1', inventory.hammer <= 0 && 'opacity-30 cursor-not-allowed')}>
+              <div className={cn('p-2 rounded-full relative', isHammerActive ? 'gs-nav-icon-hammer-active' : 'gs-nav-icon')}>
+                <SvgIcon id="hammer" size={20} className={isHammerActive ? 'text-white' : 'text-slate-300'} />
+                {inventory.hammer > 0 && (
+                  <span className="gs-badge-amber absolute -top-1 -right-1">{inventory.hammer}</span>
+                )}
+              </div>
+              <span className="gs-nav-label">Hammer</span>
+            </motion.button>
 
-        {/* Sound Toggle */}
-        <motion.button whileHover={{ y: -3 }} whileTap={{ scale: 0.9 }} onClick={toggleSound}
-          className="gs-nav-btn flex flex-col items-center gap-1">
-          <div className={cn('p-3 rounded-full', soundEnabled ? 'gs-nav-icon-active' : 'gs-nav-icon')}>
-            <SvgIcon id="sound" size={22} className={soundEnabled ? 'text-amber-950' : 'text-slate-400'} />
+            {/* Sound Toggle */}
+            <motion.button whileHover={{ y: -3 }} whileTap={{ scale: 0.9 }} onClick={toggleSound}
+              className="gs-nav-btn flex flex-col items-center gap-1">
+              <div className={cn('p-2 rounded-full', soundEnabled ? 'gs-nav-icon-active' : 'gs-nav-icon')}>
+                <SvgIcon id="sound" size={20} className={soundEnabled ? 'text-amber-955' : 'text-slate-400'} />
+              </div>
+              <span className="gs-nav-label">Sound</span>
+            </motion.button>
           </div>
-          <span className="gs-nav-label">Sound</span>
-        </motion.button>
+        </SvgCard>
       </div>
 
 

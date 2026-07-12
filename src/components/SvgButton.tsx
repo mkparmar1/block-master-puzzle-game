@@ -25,7 +25,7 @@ export const SvgButton: React.FC<SvgButtonProps> = ({
   // Map theme variables
   let fillUrl = 'url(#gold-primary)';
   let borderUrl = 'url(#gold-trim-bevel)';
-  let textColor = 'text-amber-950';
+  let textColor = 'text-amber-955';
 
   if (variant === 'stone') {
     fillUrl = 'url(#stone-light-grad)';
@@ -48,7 +48,7 @@ export const SvgButton: React.FC<SvgButtonProps> = ({
   if (disabled) {
     fillUrl = 'url(#stone-dark-grad)';
     borderUrl = '#1e293b';
-    textColor = 'text-slate-500';
+    textColor = 'text-slate-600';
   }
 
   return (
@@ -79,13 +79,13 @@ export const SvgButton: React.FC<SvgButtonProps> = ({
           width="200"
           height="52"
           rx="16"
-          fill="rgba(0,0,0,0.6)"
+          fill="rgba(0,0,0,0.65)"
         />
 
         {/* Tactile Bevel Base (moves down 2px when pressed) */}
         <rect
           x="0"
-          y={isPressed ? 4 : 0}
+          y={isPressed ? 3 : 0}
           width="200"
           height="52"
           rx="16"
@@ -96,10 +96,20 @@ export const SvgButton: React.FC<SvgButtonProps> = ({
           style={{ transition: 'y 0.08s' }}
         />
 
+        {/* Premium Gold Corner Rivets */}
+        {variant === 'gold' && !disabled && (
+          <>
+            <circle cx="14" cy={isPressed ? 17 : 14} r="2" fill="url(#gold-bright)" filter="url(#bevel-emboss)" style={{ transition: 'cy 0.08s' }} />
+            <circle cx="186" cy={isPressed ? 17 : 14} r="2" fill="url(#gold-bright)" filter="url(#bevel-emboss)" style={{ transition: 'cy 0.08s' }} />
+            <circle cx="14" cy={isPressed ? 41 : 38} r="2" fill="url(#gold-bright)" filter="url(#bevel-emboss)" style={{ transition: 'cy 0.08s' }} />
+            <circle cx="186" cy={isPressed ? 41 : 38} r="2" fill="url(#gold-bright)" filter="url(#bevel-emboss)" style={{ transition: 'cy 0.08s' }} />
+          </>
+        )}
+
         {/* Specular Glare Inner Arc (on top half) */}
         {!disabled && (
           <path
-            d={isPressed ? "M3 22a13 13 0 0 1 13-13h168a13 13 0 0 1 13 13v2H3v-2z" : "M3 18a13 13 0 0 1 13-13h168a13 13 0 0 1 13 13v2H3v-2z"}
+            d={isPressed ? "M3 21a13 13 0 0 1 13-13h168a13 13 0 0 1 13 13v2H3v-2z" : "M3 18a13 13 0 0 1 13-13h168a13 13 0 0 1 13 13v2H3v-2z"}
             fill="url(#specular-glare)"
             pointerEvents="none"
             style={{ transition: 'd 0.08s' }}
@@ -111,7 +121,7 @@ export const SvgButton: React.FC<SvgButtonProps> = ({
       <div
         className={`absolute inset-0 flex items-center justify-center font-black tracking-wide text-center uppercase text-sm px-4 gap-2 ${textColor}`}
         style={{
-          transform: isPressed ? 'translateY(2px)' : 'translateY(0)',
+          transform: isPressed ? 'translateY(2.5px)' : 'translateY(0)',
           textShadow: variant === 'gold' || variant === 'reward' ? '0 1px 0 rgba(255,255,255,0.45)' : '0 -1px 0 rgba(0,0,0,0.5)',
           transition: 'transform 0.08s',
         }}

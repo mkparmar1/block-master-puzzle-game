@@ -79,13 +79,24 @@ export const JourneyScreen: React.FC<JourneyScreenProps> = ({ onBack, onSelectLe
         </div>
 
         {/* Zigzag Path */}
-        <div className="flex flex-col gap-4 pb-8">
+        <div className="flex flex-col gap-6 pb-8 relative">
           {CAMPAIGN_LEVELS.map((lvl, idx) => {
             const isUnlocked = lvl.id <= highestLevel;
             const isCompleted = lvl.id < highestLevel;
             const isCurrent = lvl.id === highestLevel;
             const isBoss = lvl.id % 10 === 0;
             const zigPos = ZIGZAG[idx % 4];
+
+            const nextIdx = idx + 1;
+            const nextZigPos = nextIdx < CAMPAIGN_LEVELS.length ? ZIGZAG[nextIdx % 4] : null;
+
+            // X-coordinates for node centers: Left = 44px, Center = 50%, Right = parent_width - 44px
+            // Let's approximate for max-w-md (approx 384px - 448px)
+            const getX = (pos: number) => {
+              if (pos === 0) return '12.5%';
+              if (pos === 1) return '50%';
+              return '87.5%';
+            };
 
             let cardVariant: 'stone' | 'gold-border' = 'stone';
             let titleColor = 'text-slate-300';
@@ -105,7 +116,24 @@ export const JourneyScreen: React.FC<JourneyScreenProps> = ({ onBack, onSelectLe
             }
 
             return (
-              <div key={lvl.id} className={`flex ${positionClass[zigPos]}`}>
+              <div key={lvl.id} className={`relative w-full flex ${positionClass[zigPos]}`}>
+                {/* Connector Line behind node */}
+                {nextZigPos !== null && (
+                  <div className="absolute inset-0 w-full h-[96px] pointer-events-none z-0 overflow-visible">
+                    <svg width="100%" height="100%" style={{ overflow: 'visible' }}>
+                      <path
+                        d={`M ${getX(zigPos)} 32 C ${getX(zigPos)} 70, ${getX(nextZigPos)} 58, ${getX(nextZigPos)} 96`}
+                        fill="none"
+                        stroke="url(#gold-primary)"
+                        strokeWidth="3.5"
+                        strokeDasharray="6,6"
+                        opacity={isUnlocked ? 0.75 : 0.25}
+                        filter="url(#bevel-emboss)"
+                      />
+                    </svg>
+                  </div>
+                )}
+
                 <motion.div
                   whileHover={isUnlocked ? { scale: 1.08 } : {}}
                   whileTap={isUnlocked ? { scale: 0.94 } : {}}
@@ -113,7 +141,7 @@ export const JourneyScreen: React.FC<JourneyScreenProps> = ({ onBack, onSelectLe
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: Math.min(idx * 0.02, 0.5) }}
                   onClick={() => isUnlocked && onSelectLevel(lvl)}
-                  className={`w-20 sm:w-24 aspect-square cursor-pointer relative ${!isUnlocked ? 'opacity-40' : ''}`}
+                  className={`w-20 sm:w-24 aspect-square cursor-pointer relative z-10 ${!isUnlocked ? 'opacity-40' : ''}`}
                 >
                   <SvgCard className="w-full h-full flex flex-col items-center justify-center relative" variant={cardVariant}>
                     {isBoss && isUnlocked && (
