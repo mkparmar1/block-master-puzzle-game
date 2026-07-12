@@ -7,24 +7,40 @@ This project has been configured with **Capacitor**, allowing you to turn this p
 1. **Android Studio**: Installed on your local machine.
 2. **Java JDK 17+**: Installed and configured.
 
-## How to build the Android App
+## 🚀 Development & Build
 
-1. **Download the Project**: Export this project as a ZIP or to GitHub.
-2. **Install Dependencies**:
-   ```bash
-   npm install
-   ```
-3. **Build and Sync**:
-   This command builds the web app and copies the files into the Android project.
-   ```bash
-   npm run mobile:sync
-   ```
-4. **Open in Android Studio**:
-   ```bash
-   npm run mobile:open
-   ```
-5. **Build APK/Bundle**:
-   In Android Studio, go to **Build > Build Bundle(s) / APK(s) > Build APK(s)**.
+### Prerequisites
+- Node.js v22+
+- Android Studio (for native Android build)
+
+### Install
+```bash
+npm install
+```
+
+### Dev Server
+```bash
+npm run dev
+# Opens at http://localhost:3000
+```
+
+### Production Build
+```bash
+npm run build
+```
+
+### Android Deployment
+```bash
+# 1. Build web assets
+npm run build
+
+# 2. Sync into Capacitor Android project
+npx cap sync android
+
+# 3. Open in Android Studio
+npx cap open android
+# Then: Build → Generate Signed APK / Run on Device
+```
 
 ## Why Capacitor instead of pure React Native?
 
