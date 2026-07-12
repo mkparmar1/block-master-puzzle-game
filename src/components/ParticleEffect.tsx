@@ -107,20 +107,26 @@ export const LineClearBurst: React.FC<LineClearBurstProps> = ({
           return (
             <motion.div
               key={p.id}
-              initial={{ x: p.x, y: p.y, scale: 1, opacity: 1 }}
-              animate={{ x: p.x + tx, y: p.y + ty, scale: 0, opacity: 0 }}
+              initial={{ x: p.x, y: p.y, scale: 1.2, opacity: 1, rotate: 0 }}
+              animate={{ x: p.x + tx, y: p.y + ty, scale: 0, opacity: 0, rotate: Math.random() * 360 + 120 }}
               exit={{}}
-              transition={{ duration: 0.75, ease: 'easeOut' }}
+              transition={{ duration: 0.65, ease: 'easeOut' }}
               style={{
                 position: 'absolute',
                 width: p.size,
                 height: p.size,
-                borderRadius: isCircle ? '50%' : '3px',
-                backgroundColor: p.color,
-                boxShadow: `0 0 ${p.size * 2}px ${p.color}, 0 0 ${p.size * 4}px ${p.color}66`,
                 transform: 'translate(-50%, -50%)',
+                pointerEvents: 'none',
               }}
-            />
+            >
+              <svg width="100%" height="100%" viewBox="0 0 10 10">
+                <polygon 
+                  points={isCircle ? "5,0 10,3 8,10 2,10 0,3" : "5,0 10,5 5,10 0,5"} 
+                  fill={p.color} 
+                  style={{ filter: `drop-shadow(0 0 3px ${p.color})` }} 
+                />
+              </svg>
+            </motion.div>
           );
         })}
       </AnimatePresence>
@@ -299,8 +305,8 @@ export const HammerSmash: React.FC<HammerSmashProps> = ({ active, x, y }) => {
                 position: 'absolute',
                 width: p.size,
                 height: p.size,
-                backgroundColor: '#ffffff',
-                boxShadow: '0 0 10px #ffffff',
+                backgroundColor: '#fbbf24',
+                boxShadow: '0 0 8px #fbbf24, 0 0 16px rgba(251,191,36,0.6)',
                 transform: 'translate(-50%, -50%)',
               }}
             />
@@ -319,7 +325,8 @@ export const HammerSmash: React.FC<HammerSmashProps> = ({ active, x, y }) => {
               width: 60,
               height: 60,
               borderRadius: '50%',
-              border: '4px solid #ffffff',
+              border: '3px solid #fbbf24',
+              boxShadow: '0 0 15px rgba(251,191,36,0.8)',
               transform: 'translate(-50%, -50%)',
             }}
           />

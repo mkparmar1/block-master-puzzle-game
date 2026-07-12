@@ -225,26 +225,29 @@ export const DraggableBlock: React.FC<DraggableBlockProps> = ({
 
   return (
     <div className="relative flex items-center justify-center w-full h-full">
-      {/* Particle Trail */}
+      {/* Particle Trail (Vector Stars) */}
       <AnimatePresence mode="popLayout">
         {trailParticles.map(p => (
           <motion.div
             key={p.id}
-            initial={{ opacity: 0.85, scale: 0.6, filter: 'blur(1px)' }}
-            animate={{ opacity: 0, scale: 2.2, filter: 'blur(8px)' }}
+            initial={{ opacity: 0.9, scale: 0.4, rotate: 0 }}
+            animate={{ opacity: 0, scale: 1.8, rotate: 120 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.45 }}
-            className="fixed pointer-events-none rounded-full z-[40]"
+            transition={{ duration: 0.35, ease: 'easeOut' }}
+            className="fixed pointer-events-none z-[40]"
             style={{
               left: p.x,
               top: p.y,
-              width: 14,
-              height: 14,
-              backgroundColor: block.color,
+              width: 12,
+              height: 12,
+              color: block.color,
               transform: 'translate(-50%, -50%)',
-              boxShadow: `0 0 16px 4px ${block.color}aa, 0 0 30px ${block.color}55`,
             }}
-          />
+          >
+            <svg width="100%" height="100%" viewBox="0 0 6 6" fill="currentColor" style={{ filter: `drop-shadow(0 0 4px ${block.color})` }}>
+              <path d="M3 0L3.7 2.3L6 3L3.7 3.7L3 6L2.3 3.7L0 3L2.3 2.3L3 0Z" />
+            </svg>
+          </motion.div>
         ))}
       </AnimatePresence>
 
@@ -257,16 +260,16 @@ export const DraggableBlock: React.FC<DraggableBlockProps> = ({
             exit={{ scale: 0, opacity: 0 }}
             onClick={handleRotate}
             onTouchEnd={(e) => { e.stopPropagation(); handleRotate(e); }}
-            className="absolute -top-8 left-1/2 -translate-x-1/2 z-50 rounded-full p-2"
+            className="absolute -top-9 left-1/2 -translate-x-1/2 z-50 rounded-full p-2.5"
             style={{
-              background: 'rgba(59,130,246,0.25)',
-              border: '1px solid rgba(59,130,246,0.55)',
-              boxShadow: '0 0 14px rgba(59,130,246,0.45)',
+              background: 'var(--gradient-gold)',
+              border: '2px solid #fbbf24',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.5), 0 0 10px rgba(251,191,36,0.3)',
               backdropFilter: 'blur(8px)',
-              color: '#93c5fd',
+              color: '#451a03',
             }}
           >
-            <RotateCw size={14} />
+            <RotateCw size={14} strokeWidth={3} />
           </motion.button>
         )}
       </AnimatePresence>
@@ -283,9 +286,9 @@ export const DraggableBlock: React.FC<DraggableBlockProps> = ({
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
         whileDrag={{
-          scale: 1.12,
+          scale: 1.18,
           zIndex: 100,
-          filter: `drop-shadow(0px 16px 28px rgba(0,0,0,0.55)) drop-shadow(0px 0px 12px ${block.color}88)`,
+          filter: `drop-shadow(0px 24px 36px rgba(0,0,0,0.65)) drop-shadow(0px 0px 15px ${block.color}cc)`,
         }}
         animate={isDragging ? undefined : { scale: 0.65 }}
         transition={!isDragging ? {} : { type: 'spring', stiffness: 800, damping: 35 }}
@@ -301,9 +304,9 @@ export const DraggableBlock: React.FC<DraggableBlockProps> = ({
         {/* Neon glow aura — visible while dragging */}
         {isDragging && (
           <div
-            className="absolute inset-[-6px] rounded-xl pointer-events-none"
+            className="absolute inset-[-8px] rounded-xl pointer-events-none"
             style={{
-              boxShadow: `0 0 20px 6px ${block.color}66, 0 0 40px 10px ${block.color}33`,
+              boxShadow: `0 0 24px 8px ${block.color}77, 0 0 45px 12px ${block.color}44`,
               animation: 'dragger-pulse 0.8s ease-in-out infinite alternate',
             }}
           />

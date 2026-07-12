@@ -5,12 +5,15 @@
 
 import React, { useEffect } from 'react';
 import { motion } from 'motion/react';
-import { RotateCcw, Home, Trophy, Share2, Star, Zap, Target, LayoutGrid } from 'lucide-react';
 import { useGameStore } from '../store/useGameStore';
 import confetti from 'canvas-confetti';
 import { useThemeStore } from '../store/useThemeStore';
 import { usePlayerStore, getRankForXP, getNextRank, xpForScore } from '../store/usePlayerStore';
 import { shareScore } from '../lib/shareCard';
+import { SvgIcon } from '../components/SvgIcon';
+import { SvgButton } from '../components/SvgButton';
+import { SvgCard } from '../components/SvgCard';
+import { SvgProgressBar } from '../components/SvgProgressBar';
 
 interface GameOverScreenProps {
   onRestart: () => void;
@@ -30,31 +33,38 @@ function getStarRating(score: number, difficulty: string): number {
   return 0;
 }
 
-const StatCard: React.FC<{ icon: React.ReactNode; label: string; value: string | number; accent?: boolean }> = ({
-  icon, label, value, accent
+const StatCard: React.FC<{ iconId: any; label: string; value: string | number; accent?: boolean }> = ({
+  iconId, label, value, accent
 }) => (
-  <div className="flex flex-col items-center gap-1 p-3 bg-slate-50 dark:bg-white/5 rounded-2xl border border-slate-100 dark:border-white/10">
-    <div className={`${accent ? 'text-amber-500' : 'text-slate-400'}`}>{icon}</div>
-    <span className={`text-xl font-black ${accent ? 'text-amber-500' : 'text-slate-900 dark:text-white'}`}>{value}</span>
-    <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest text-center">{label}</span>
-  </div>
+  <SvgCard className="p-3" variant={accent ? 'gold-border' : 'stone'}>
+    <div className="flex flex-col items-center gap-1 text-center">
+      <SvgIcon id={iconId} size={18} />
+      <span className={`text-xl font-black ${accent ? 'text-amber-950' : 'text-white'}`}>{value}</span>
+      <span className={`text-[8px] sm:text-[9px] font-black uppercase tracking-widest text-center ${accent ? 'text-amber-950/70' : 'text-slate-500'}`}>{label}</span>
+    </div>
+  </SvgCard>
 );
 
 export const GameOverScreen: React.FC<GameOverScreenProps> = ({ onRestart, onHome }) => {
   const { score, highScore, difficulty, blocksPlaced, totalLinesCleared, maxCombo, gridSize } = useGameStore();
   const { currentTheme } = useThemeStore();
-  const { xp, addXP, addStats } = usePlayerStore();
-  const isNewBest = score >= highScore && score > 0;
-  const stars = getStarRating(score, difficulty);
+  const { xp, addXP, stars, addStars } = usePlayerStore();
+
+  const earnedXP = xpForScore(score);
+  const earnedStars = score >= 500 ? Math.floor(score / 500) * 2 : 0;
+  const starsCount = getStarRating(score, difficulty);
+
   const rank = getRankForXP(xp);
   const nextRank = getNextRank(xp);
+  const isNewBest = score > 0 && score >= highScore;
 
-  // Award XP for game completion
   useEffect(() => {
-    const earned = xpForScore(score, maxCombo, difficulty);
-    addXP(earned);
-    addStats(blocksPlaced, 1); // blocks placed this game, +1 game played
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    addXP(earnedXP);
+    if (earnedStars > 0) {
+      addStars(earnedStars);
+    }
+    const { addStats } = usePlayerStore.getState();
+    addStats(blocksPlaced, 1);
   }, []);
 
   const handleShare = async () => {
@@ -85,34 +95,29 @@ export const GameOverScreen: React.FC<GameOverScreenProps> = ({ onRestart, onHom
     }
   }, [isNewBest, currentTheme]);
 
+  // Calculate rank XP progress percentage
+  const progressPercent = nextRank ? Math.min(100, ((xp - rank.minXP) / (nextRank.minXP - rank.minXP)) * 100) : 100;
+
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md">
       <motion.div
         initial={{ scale: 0.9, opacity: 0, y: 20 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
         transition={{ type: 'spring', damping: 20, stiffness: 300 }}
-        className="w-full max-w-[90vw] sm:max-w-sm bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] overflow-hidden border border-white dark:border-slate-800"
+        className="w-full max-w-[90vw] sm:max-w-sm"
       >
-        {/* Top gradient bar */}
-        <div className="h-1" style={{ background: 'var(--gradient-button)' }} />
-
-        <div className="p-6 text-center">
+        <SvgCard className="p-6 text-center" variant="gold-border">
           {/* Trophy icon */}
           <motion.div
             initial={{ y: -20, opacity: 0, scale: 0 }}
             animate={{ y: 0, opacity: 1, scale: 1 }}
             transition={{ delay: 0.15, type: 'spring', stiffness: 300 }}
-            className="inline-flex p-4 rounded-full mb-4 border"
-            style={{
-              background: `rgb(var(--color-primary) / 0.1)`,
-              borderColor: `rgb(var(--color-primary) / 0.2)`,
-              color: `rgb(var(--color-primary))`,
-            }}
+            className="inline-flex p-4 rounded-full mb-4 border border-amber-400/40 bg-amber-500/10 text-amber-400 shadow-[0_0_15px_rgba(251,191,36,0.25)]"
           >
-            <Trophy size={40} className="drop-shadow-sm" />
+            <SvgIcon id="leaderboard" size={40} />
           </motion.div>
 
-          <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-1 tracking-tighter">
+          <h2 className="text-3xl font-black text-white mb-1 tracking-tighter" style={{ textShadow: '0 0 15px rgba(251,191,36,0.3)' }}>
             {isNewBest ? '🎉 NEW BEST!' : 'GAME OVER'}
           </h2>
 
@@ -130,10 +135,10 @@ export const GameOverScreen: React.FC<GameOverScreenProps> = ({ onRestart, onHom
                 animate={{ rotate: 0, scale: 1 }}
                 transition={{ delay: 0.3 + s * 0.1, type: 'spring', stiffness: 400 }}
               >
-                <Star
+                <SvgIcon
+                  id="stars"
                   size={28}
-                  className={s <= stars ? 'text-amber-400' : 'text-slate-200 dark:text-slate-700'}
-                  fill={s <= stars ? 'currentColor' : 'none'}
+                  className={s <= starsCount ? 'text-amber-400' : 'text-slate-700'}
                 />
               </motion.div>
             ))}
@@ -141,90 +146,76 @@ export const GameOverScreen: React.FC<GameOverScreenProps> = ({ onRestart, onHom
 
           {/* Main Scores */}
           <div className="grid grid-cols-2 gap-3 mb-4">
-            <div className="p-4 bg-slate-50 dark:bg-white/5 rounded-2xl border border-slate-100 dark:border-white/10">
-              <span className="block text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Score</span>
-              <span className="text-3xl font-black text-slate-900 dark:text-white">{score.toLocaleString()}</span>
-            </div>
-            <div className="p-4 bg-slate-50 dark:bg-white/5 rounded-2xl border border-slate-100 dark:border-white/10">
-              <span className="block text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Best</span>
-              <span className="text-3xl font-black tracking-tight" style={{ color: `rgb(var(--color-primary))` }}>
+            <SvgCard className="p-4" variant="stone">
+              <span className="block text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Score</span>
+              <span className="text-3xl font-black text-white">{score.toLocaleString()}</span>
+            </SvgCard>
+            <SvgCard className="p-4" variant="stone">
+              <span className="block text-[9px] font-bold text-slate-500 uppercase tracking-widest mb-1">Best</span>
+              <span className="text-3xl font-black tracking-tight text-amber-400">
                 {highScore.toLocaleString()}
               </span>
-            </div>
+            </SvgCard>
           </div>
 
           {/* Session Stats */}
           <div className="grid grid-cols-3 gap-2 mb-4">
-            <StatCard icon={<LayoutGrid size={16} />} label="Blocks" value={blocksPlaced} />
-            <StatCard icon={<Target size={16} />} label="Lines" value={totalLinesCleared} />
-            <StatCard icon={<Zap size={16} />} label="Max Combo" value={`${maxCombo}x`} accent={maxCombo >= 3} />
+            <StatCard iconId="theme" label="Blocks" value={blocksPlaced} />
+            <StatCard iconId="mission" label="Lines" value={totalLinesCleared} />
+            <StatCard iconId="zap" label="Max Combo" value={`${maxCombo}x`} accent={maxCombo >= 3} />
           </div>
 
           {/* XP / Rank bar */}
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="p-3 bg-slate-50 dark:bg-white/5 rounded-2xl border border-slate-100 dark:border-white/10 mb-4"
-          >
+          <SvgCard className="p-3 mb-4" variant="stone">
             <div className="flex items-center justify-between mb-1.5">
               <div className="flex items-center gap-2">
                 <span className="text-lg">{rank.emoji}</span>
-                <span className="font-black text-slate-800 dark:text-slate-200 text-sm">{rank.title}</span>
+                <span className="font-black text-white text-sm">{rank.title}</span>
               </div>
               <span className="text-[10px] font-bold text-slate-400">{xp.toLocaleString()} XP</span>
             </div>
-            <div className="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: nextRank ? `${Math.min(100, ((xp - rank.minXP) / (nextRank.minXP - rank.minXP)) * 100)}%` : '100%' }}
-                transition={{ duration: 1, delay: 0.6, ease: 'easeOut' }}
-                className="h-full rounded-full"
-                style={{ background: 'var(--gradient-button)' }}
-              />
-            </div>
+            <SvgProgressBar progress={progressPercent} height={6} />
             {nextRank && (
               <p className="text-[9px] text-slate-400 mt-1 text-right">
                 {(nextRank.minXP - xp).toLocaleString()} XP to {nextRank.emoji} {nextRank.title}
               </p>
             )}
-          </motion.div>
+          </SvgCard>
 
           {/* Buttons */}
           <div className="flex flex-col gap-2">
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+            <SvgButton
               onClick={onRestart}
-              className="flex items-center justify-center gap-3 w-full py-4 text-white rounded-2xl font-black shadow-lg transition-all text-lg tracking-tight border border-white/10"
-              style={{ background: 'var(--gradient-button)' }}
+              id="gameover-restart-btn"
+              className="w-full py-4 rounded-2xl"
+              variant="gold"
             >
-              <RotateCcw size={22} />
+              <SvgIcon id="refresh" size={22} className="text-amber-950" />
               PLAY AGAIN
-            </motion.button>
+            </SvgButton>
 
             <div className="grid grid-cols-2 gap-2">
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+              <SvgButton
                 onClick={onHome}
-                className="flex items-center justify-center gap-2 py-3 bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-300 rounded-2xl font-bold border border-slate-200 dark:border-white/10 text-sm"
+                id="gameover-home-btn"
+                className="w-full py-3 rounded-2xl"
+                variant="stone"
               >
-                <Home size={16} />
+                <SvgIcon id="home" size={16} />
                 HOME
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+              </SvgButton>
+              <SvgButton
                 onClick={handleShare}
-                className="flex items-center justify-center gap-2 py-3 bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-300 rounded-2xl font-bold border border-slate-200 dark:border-white/10 text-sm"
+                id="gameover-share-btn"
+                className="w-full py-3 rounded-2xl"
+                variant="stone"
               >
-                <Share2 size={16} />
+                <SvgIcon id="journey" size={16} />
                 SHARE
-              </motion.button>
+              </SvgButton>
             </div>
           </div>
-        </div>
+        </SvgCard>
       </motion.div>
     </div>
   );

@@ -8,120 +8,160 @@ import { motion } from 'motion/react';
 import { Leaf, Heart, Sun, Wind, Moon, Flame, Zap } from 'lucide-react';
 import { usePlayerStore, BlockSkin } from '../store/usePlayerStore';
 
-// Local utility for tailwind class merging
-function cn(...classes: any[]) {
-  return classes.filter(Boolean).filter(c => typeof c === 'string').join(' ');
-}
-
-
 interface CellProps {
   color: string | null;
   isGhost?: boolean;
   isInvalid?: boolean;
-  skinOverride?: BlockSkin; // allow tutorial to use classic always
+  skinOverride?: BlockSkin;
 }
 
 const getIconForColor = (color: string | null) => {
   if (!color) return null;
   const c = color.toUpperCase();
-  if (c.includes('FF5252')) return <Heart className="w-1/2 h-1/2 text-white/80" strokeWidth={3} />;
-  if (c.includes('69F0AE')) return <Leaf className="w-1/2 h-1/2 text-white/80" strokeWidth={3} />;
-  if (c.includes('FFD740')) return <Sun className="w-1/2 h-1/2 text-white/80" strokeWidth={3} />;
-  if (c.includes('E040FB')) return <Wind className="w-1/2 h-1/2 text-white/80" strokeWidth={3} />;
-  if (c.includes('448AFF')) return <Moon className="w-1/2 h-1/2 text-white/80" strokeWidth={3} />;
-  if (c.includes('FFAB40')) return <Flame className="w-1/2 h-1/2 text-white/80" strokeWidth={3} />;
-  if (c.includes('40C4FF')) return <Zap className="w-1/2 h-1/2 text-white/80" strokeWidth={3} />;
+  if (c.includes('FF5252') || c.includes('FF3B30') || c.includes('RED') || c.includes('EF4444')) {
+    return <Heart className="w-full h-full text-white/90" strokeWidth={3.5} />;
+  }
+  if (c.includes('69F0AE') || c.includes('10B981') || c.includes('GREEN') || c.includes('22C55E')) {
+    return <Leaf className="w-full h-full text-white/90" strokeWidth={3.5} />;
+  }
+  if (c.includes('FFD740') || c.includes('EAB308') || c.includes('YELLOW') || c.includes('F59E0B')) {
+    return <Sun className="w-full h-full text-white/90" strokeWidth={3.5} />;
+  }
+  if (c.includes('E040FB') || c.includes('A855F7') || c.includes('PURPLE') || c.includes('D946EF')) {
+    return <Wind className="w-full h-full text-white/90" strokeWidth={3.5} />;
+  }
+  if (c.includes('448AFF') || c.includes('3B82F6') || c.includes('BLUE') || c.includes('1D4ED8')) {
+    return <Moon className="w-full h-full text-white/90" strokeWidth={3.5} />;
+  }
+  if (c.includes('FFAB40') || c.includes('F97316') || c.includes('ORANGE')) {
+    return <Flame className="w-full h-full text-white/90" strokeWidth={3.5} />;
+  }
+  if (c.includes('40C4FF') || c.includes('06B6D4') || c.includes('CYAN')) {
+    return <Zap className="w-full h-full text-white/90" strokeWidth={3.5} />;
+  }
   return null;
 };
 
-/** Classic skin — premium 3D look optimised for dark backgrounds */
-const ClassicCell: React.FC<{ color: string }> = ({ color }) => (
-  <motion.div
-    initial={{ scale: 0.75, opacity: 0 }}
-    animate={{ scale: 1, opacity: 1 }}
-    transition={{ duration: 0.12, ease: [0.34, 1.56, 0.64, 1] }}
-    className="w-full h-full rounded-[6px] flex items-center justify-center relative overflow-hidden"
-    style={{
-      backgroundColor: color,
-      boxShadow: [
-        `inset 3px 3px 6px rgba(255,255,255,0.45)`,
-        `inset -3px -3px 6px rgba(0,0,0,0.55)`,
-        `0 0 10px ${color}88`,
-        `0 0 22px ${color}44`,
-        `0 4px 14px rgba(0,0,0,0.55)`,
-      ].join(', '),
-      border: `1px solid ${color}cc`,
-    }}
-  >
-    {/* top-left highlight bevel */}
-    <div className="absolute inset-0 rounded-[6px] pointer-events-none"
-      style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.22) 0%, transparent 50%)' }} />
-    {/* inner icon */}
-    <div className="relative z-10 w-[55%] h-[55%] flex items-center justify-center opacity-60 drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]">
-      {getIconForColor(color)}
-    </div>
-    {/* Shine spot */}
-    <div className="absolute top-[10%] left-[10%] w-[28%] h-[28%] bg-white/40 rounded-full blur-[3px]" />
-  </motion.div>
-);
+function getGemstoneGradId(color: string): string {
+  const c = color.toUpperCase();
+  if (c.includes('FF5252') || c.includes('FF3B30') || c.includes('RED') || c.includes('EF4444')) return 'gem-ruby';
+  if (c.includes('69F0AE') || c.includes('10B981') || c.includes('GREEN') || c.includes('22C55E')) return 'gem-emerald';
+  if (c.includes('FFD740') || c.includes('EAB308') || c.includes('YELLOW') || c.includes('F59E0B')) return 'gem-topaz';
+  if (c.includes('E040FB') || c.includes('A855F7') || c.includes('PURPLE') || c.includes('D946EF')) return 'gem-amethyst';
+  if (c.includes('448AFF') || c.includes('3B82F6') || c.includes('BLUE') || c.includes('1D4ED8')) return 'gem-sapphire';
+  if (c.includes('FFAB40') || c.includes('F97316') || c.includes('ORANGE')) return 'gem-amber';
+  if (c.includes('40C4FF') || c.includes('06B6D4') || c.includes('CYAN')) return 'gem-aquamarine';
+  return 'gem-diamond';
+}
 
-/** Neon skin — dark fill with glowing neon border */
+/** Classic skin — premium 3D look with gold frame and crystal facets */
+const ClassicCell: React.FC<{ color: string }> = ({ color }) => {
+  const gradId = getGemstoneGradId(color);
+  return (
+    <motion.div
+      initial={{ scale: 0.75, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      transition={{ duration: 0.15, ease: [0.34, 1.56, 0.64, 1] }}
+      className="w-full h-full relative"
+    >
+      <svg width="100%" height="100%" viewBox="0 0 40 40" style={{ display: 'block', overflow: 'visible' }}>
+        {/* Drop shadow */}
+        <rect x="1" y="2.5" width="38" height="38" rx="6" fill="rgba(0,0,0,0.5)" />
+        
+        {/* Golden outer bezel */}
+        <rect x="1" y="1" width="38" height="38" rx="6" fill="url(#gold-primary)" stroke="url(#gold-trim-bevel)" strokeWidth="1" />
+        
+        {/* Inset Gem Base */}
+        <rect x="3" y="3" width="34" height="34" rx="4.5" fill={`url(#${gradId})`} />
+
+        {/* Facet Cuts */}
+        {/* Top facet */}
+        <polygon points="3,3 37,3 28,11 12,11" fill="rgba(255,255,255,0.22)" />
+        {/* Bottom facet */}
+        <polygon points="3,37 37,37 28,29 12,29" fill="rgba(0,0,0,0.35)" />
+        {/* Left facet */}
+        <polygon points="3,3 12,11 12,29 3,37" fill="rgba(255,255,255,0.12)" />
+        {/* Right facet */}
+        <polygon points="37,3 28,11 28,29 37,37" fill="rgba(0,0,0,0.2)" />
+
+        {/* Specular Glare Arc */}
+        <rect x="4" y="4" width="32" height="15" rx="2.5" fill="url(#specular-glare)" pointerEvents="none" />
+        
+        {/* Shine Sparkle Star */}
+        <path d="M30,7 L31.2,9.3 L33.5,10 L31.2,10.7 L30,13 L28.8,10.7 L26.5,10 L28.8,9.3 Z" fill="white" opacity="0.85" />
+      </svg>
+
+      {/* Inner Icon */}
+      <div className="absolute inset-0 flex items-center justify-center opacity-85 pointer-events-none">
+        <div className="w-[50%] h-[50%] drop-shadow-[0_2px_3px_rgba(0,0,0,0.55)]">
+          {getIconForColor(color)}
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+/** Neon skin — dark fill with glowing neon border and gold corners */
 const NeonCell: React.FC<{ color: string }> = ({ color }) => (
   <motion.div
     initial={{ scale: 0.85, opacity: 0 }}
     animate={{ scale: 1, opacity: 1 }}
     transition={{ duration: 0.1, ease: 'easeOut' }}
-    className="w-full h-full rounded-md sm:rounded-lg flex items-center justify-center relative overflow-hidden"
+    className="w-full h-full rounded-[8px] flex items-center justify-center relative overflow-hidden"
     style={{
-      backgroundColor: `${color}22`,
+      backgroundColor: `${color}18`,
       border: `2px solid ${color}`,
-      boxShadow: `0 0 8px ${color}99, 0 0 20px ${color}44, inset 0 0 8px ${color}33`,
+      boxShadow: `0 0 10px ${color}aa, 0 0 24px ${color}33, inset 0 0 10px ${color}44`,
     }}
   >
-    {/* Neon scan line */}
+    <div className="absolute inset-[1px] border border-white/20 rounded-[6px] pointer-events-none" />
     <div
-      className="absolute inset-0 opacity-20"
+      className="absolute inset-0 opacity-20 pointer-events-none"
       style={{
         background: `linear-gradient(transparent 45%, ${color}88 50%, transparent 55%)`,
-        animation: 'shimmer 3s linear infinite',
+        animation: 'shimmer 2.5s linear infinite',
       }}
     />
-    <div className="opacity-60 absolute inset-0 flex items-center justify-center">{getIconForColor(color)}</div>
-  </motion.div>
-);
-
-/** Crystal skin — frosted glass with high-end refraction refraction */
-const CrystalCell: React.FC<{ color: string }> = ({ color }) => (
-  <motion.div
-    initial={{ scale: 0.85, opacity: 0 }}
-    animate={{ scale: 1, opacity: 1 }}
-    transition={{ duration: 0.1, ease: 'easeOut' }}
-    className="w-full h-full rounded-md sm:rounded-lg relative overflow-hidden ring-1 ring-white/30"
-    style={{
-      background: `linear-gradient(135deg, ${color}66 0%, ${color}33 50%, ${color}77 100%)`,
-      backdropFilter: 'blur(8px)',
-      boxShadow: `inset 0 1px 2px rgba(255,255,255,0.6), 0 4px 15px ${color}55`,
-    }}
-  >
-    <div className="absolute inset-0 opacity-40 animate-shine-sweep bg-gradient-to-r from-transparent via-white to-transparent w-full h-full -skew-x-12" />
-    <div className="absolute inset-0 flex items-center justify-center opacity-40 mix-blend-overlay scale-110">
+    <div className="opacity-70 absolute z-10 w-[50%] h-[50%] flex items-center justify-center drop-shadow-[0_0_6px_rgba(255,255,255,0.7)]">
       {getIconForColor(color)}
     </div>
-    <div className="absolute inset-2 border border-white/20 rounded-sm sm:rounded-md pointer-events-none" />
   </motion.div>
 );
 
-/** Matrix skin — digital rain glitch effect */
+/** Crystal skin — frosted glass with high-end refraction */
+const CrystalCell: React.FC<{ color: string }> = ({ color }) => {
+  const gradId = getGemstoneGradId(color);
+  return (
+    <motion.div
+      initial={{ scale: 0.85, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      transition={{ duration: 0.1, ease: 'easeOut' }}
+      className="w-full h-full relative"
+    >
+      <svg width="100%" height="100%" viewBox="0 0 40 40" style={{ display: 'block' }}>
+        <rect x="1" y="1" width="38" height="38" rx="6" fill={`url(#${gradId})`} opacity="0.8" stroke="rgba(255,255,255,0.3)" strokeWidth="1" />
+        <rect x="3.5" y="3.5" width="33" height="33" rx="4.5" fill="none" stroke="rgba(255,255,255,0.15)" strokeWidth="1" />
+        {/* Specular glare */}
+        <rect x="2" y="2" width="36" height="18" rx="4" fill="url(#specular-glare)" />
+      </svg>
+      <div className="absolute inset-0 flex items-center justify-center opacity-60 mix-blend-overlay scale-110 pointer-events-none">
+        {getIconForColor(color)}
+      </div>
+    </motion.div>
+  );
+};
+
+/** Matrix skin — digital rain glitch effect with glowing emerald outlines */
 const MatrixCell: React.FC<{ color: string }> = ({ color }) => (
   <motion.div
     initial={{ scale: 0.85, opacity: 0 }}
     animate={{ scale: 1, opacity: 1 }}
     transition={{ duration: 0.1, ease: 'easeOut' }}
-    className="w-full h-full rounded-md sm:rounded-lg flex items-center justify-center relative bg-black overflow-hidden border-2"
-    style={{ borderColor: `${color}88` }}
+    className="w-full h-full rounded-[8px] flex items-center justify-center relative bg-[#020617] overflow-hidden border-2"
+    style={{ borderColor: `${color}88`, boxShadow: `0 0 10px ${color}66` }}
   >
     <div 
-      className="absolute inset-0 opacity-40 animate-matrix"
+      className="absolute inset-0 opacity-40 animate-matrix pointer-events-none"
       style={{ 
         backgroundImage: `linear-gradient(0deg, transparent 0%, ${color} 50%, transparent 100%)`,
         backgroundSize: '100% 400%',
@@ -135,12 +175,12 @@ const MatrixCell: React.FC<{ color: string }> = ({ color }) => (
         padding: '2px'
       }}
     >
-      01101110 1010110 01101110 1010110
+      01 10
     </div>
-    <div className="relative z-10 drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] filter brightness-125">
+    <div className="relative z-10 drop-shadow-[0_0_8px_rgba(255,255,255,0.8)] filter brightness-125 scale-90">
       {getIconForColor(color)}
     </div>
-    <div className="absolute inset-0 shadow-[inset_0_0_15px_rgba(0,0,0,0.8)]" />
+    <div className="absolute inset-0 shadow-[inset_0_0_12px_rgba(0,0,0,0.85)] pointer-events-none" />
   </motion.div>
 );
 
@@ -150,19 +190,18 @@ const GoldCell: React.FC<{ color: string }> = ({ color }) => (
     initial={{ scale: 0.85, opacity: 0 }}
     animate={{ scale: 1, rotate: 0 }}
     transition={{ duration: 0.1, ease: 'easeOut' }}
-    className="w-full h-full rounded-md sm:rounded-lg flex items-center justify-center relative overflow-hidden"
-    style={{
-      background: `linear-gradient(135deg, #1e293b 0%, ${color} 40%, #ffffff 50%, ${color} 60%, #0f172a 100%)`,
-      backgroundSize: '300% 300%',
-      border: '1.5px solid rgba(255,255,255,0.4)',
-      boxShadow: `0 6px 20px ${color}66, inset 0 2px 5px rgba(255,255,255,0.8)`
-    }}
+    className="w-full h-full relative"
   >
-    <div className="absolute inset-0 animate-glow-flow opacity-60 bg-gradient-to-tr from-transparent via-white/50 to-transparent" />
-    <div className="relative z-10 drop-shadow-lg scale-90 filter brightness-90 contrast-125">
-      {getIconForColor(color)}
+    <svg width="100%" height="100%" viewBox="0 0 40 40" style={{ display: 'block' }}>
+      <rect x="1" y="1" width="38" height="38" rx="6" fill="url(#gold-primary)" stroke="url(#gold-trim-bevel)" strokeWidth="1.5" filter="url(#bevel-emboss)" />
+      {/* Specular Glare */}
+      <rect x="2" y="2" width="36" height="15" rx="3" fill="url(#specular-glare)" />
+    </svg>
+    <div className="absolute inset-0 flex items-center justify-center opacity-85 pointer-events-none">
+      <div className="w-[50%] h-[50%] drop-shadow-[0_2px_3px_rgba(71,39,18,0.6)] text-amber-950">
+        {getIconForColor(color)}
+      </div>
     </div>
-    <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-b from-white/10 to-transparent pointer-events-none" />
   </motion.div>
 );
 
@@ -171,19 +210,24 @@ export const Cell: React.FC<CellProps> = ({ color, isGhost, isInvalid, skinOverr
   const skin = skinOverride ?? blockSkin;
 
   return (
-    <div
-      className={cn(
-        'w-full h-full relative overflow-hidden transition-all duration-200',
+    <div className="w-full h-full relative overflow-hidden transition-all duration-200 rounded-[8px]">
+      {/* Empty slot - Tactile Vector pocket */}
+      {!color && !isGhost && (
+        <svg width="100%" height="100%" viewBox="0 0 40 40" style={{ display: 'block' }}>
+          <rect
+            x="0.5"
+            y="0.5"
+            width="39"
+            height="39"
+            rx="6"
+            fill="url(#stone-bevel-grad)"
+            filter="url(#inset-shadow)"
+            stroke="#090d16"
+            strokeWidth="0.8"
+          />
+        </svg>
       )}
-      style={{
-        borderRadius: '6px',
-        ...((!color && !isGhost) ? {
-          background: 'rgba(255,255,255,0.025)',
-          boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.4), inset 0 0 0 1px rgba(255,255,255,0.04)',
-        } : {}),
-        ...(isInvalid ? { background: 'rgba(239,68,68,0.15)' } : {}),
-      }}
-    >
+
       {/* Filled cell — render skin */}
       {color && !isGhost && (
         skin === 'neon' ? <NeonCell color={color} /> :
@@ -197,9 +241,12 @@ export const Cell: React.FC<CellProps> = ({ color, isGhost, isInvalid, skinOverr
       {isGhost && (
         <div
           style={{
-            position: 'absolute', inset: 0, borderRadius: '6px',
-            border: `2px dashed ${isInvalid ? 'rgba(239,68,68,0.7)' : 'rgba(255,255,255,0.5)'}`,
-            background: isInvalid ? 'rgba(239,68,68,0.12)' : 'rgba(255,255,255,0.07)',
+            position: 'absolute',
+            inset: 0,
+            borderRadius: '8px',
+            border: `2px dashed ${isInvalid ? 'rgba(239,68,68,0.85)' : 'rgba(16,185,129,0.85)'}`,
+            background: isInvalid ? 'rgba(239,68,68,0.15)' : 'rgba(16,185,129,0.12)',
+            boxShadow: isInvalid ? '0 0 10px rgba(239,68,68,0.45)' : '0 0 10px rgba(16,185,129,0.45)',
             animation: 'pulse 1.2s ease-in-out infinite',
           }}
         />

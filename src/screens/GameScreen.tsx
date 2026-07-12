@@ -16,9 +16,13 @@ import { useThemeStore } from '../store/useThemeStore';
 import { canPlaceBlock } from '../game/gridLogic';
 import { StarShop } from '../components/StarShop';
 import { HammerSmash } from '../components/ParticleEffect';
-import { Star, Hammer as HammerIcon, Home, Undo2, RefreshCw, RotateCcw, Volume2, VolumeX, Zap, Lightbulb } from 'lucide-react';
-import confetti from 'canvas-confetti';
+import { SvgIcon } from '../components/SvgIcon';
+import { SvgButton } from '../components/SvgButton';
+import { SvgCard } from '../components/SvgCard';
+import { SvgProgressBar } from '../components/SvgProgressBar';
+import { SvgBadge } from '../components/SvgBadge';
 import { BlockTemplate } from '../game/blockShapes';
+import confetti from 'canvas-confetti';
 
 // Local utility for tailwind class merging
 function cn(...classes: any[]) {
@@ -506,7 +510,9 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onHome }) => {
             animate={{ scale: 1, opacity: 1 }}
             className={cn(
               "mt-2 mb-6 px-8 py-3 rounded-[2rem] border-2 shadow-2xl backdrop-blur-md text-center flex flex-col items-center",
-              timeLeft <= 10 ? "border-red-500 bg-red-500/20 text-red-500 animate-pulse" : "border-amber-400 bg-black/40 text-amber-400 shadow-[0_0_30px_rgba(251,191,36,0.3)]"
+              timeLeft <= 10 
+                ? "border-red-500 bg-red-500/20 text-red-500 animate-pulse" 
+                : "border-amber-400 bg-slate-900/80 text-amber-400 shadow-[0_0_20px_rgba(251,191,36,0.25)]"
             )}
           >
             <span className="text-[10px] uppercase font-black tracking-[0.3em] opacity-80">Time Attack</span>
@@ -522,16 +528,16 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onHome }) => {
         <AnimatePresence>
           {showComboBanner && combo > 1 && (
             <motion.div key="combo" initial={{ scale: 0, rotate: -20 }} animate={{ scale: 1, rotate: 0 }} exit={{ scale: 0 }}
-              className="absolute -top-12 right-4 z-20 text-white px-4 py-1 rounded-full font-black italic shadow-lg border-2 border-white/20"
-              style={{ background: 'linear-gradient(135deg, #f97316, #ef4444)' }}>
+              className="absolute -top-12 right-4 z-20 text-amber-950 px-5 py-2.5 rounded-full font-black italic shadow-lg border-2 border-amber-300"
+              style={{ background: 'var(--gradient-gold)' }}>
               {combo}x COMBO!
             </motion.div>
           )}
 
           {noMovesLeft && !isGameOver && (
             <motion.div key="no-moves" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
-              className="absolute top-0 z-20 bg-amber-500 text-white px-4 py-2 rounded-full font-bold shadow-lg flex items-center gap-2">
-              <Zap size={16} fill="currentColor" />
+              className="absolute top-0 z-20 bg-gradient-to-r from-red-600 to-amber-500 text-white border border-amber-300 px-5 py-2.5 rounded-full font-black shadow-lg flex items-center gap-2">
+              <SvgIcon id="zap" size={16} />
               Stuck? Rotate or Refresh!
             </motion.div>
           )}
@@ -540,9 +546,9 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onHome }) => {
           {showHintButton && !isGameOver && (
             <motion.button key="hint-btn" initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0 }}
               onClick={handleShowHint}
-              className="absolute top-0 left-4 z-20 flex items-center gap-2 px-4 py-2 rounded-full font-bold text-white shadow-lg text-sm border border-white/20"
-              style={{ background: 'var(--gradient-button)' }}>
-              <Lightbulb size={14} fill="currentColor" />
+              className="absolute top-0 left-4 z-20 flex items-center gap-2 px-5 py-2.5 rounded-full font-black text-amber-950 shadow-lg text-sm border-2 border-amber-300"
+              style={{ background: 'var(--gradient-gold)' }}>
+              <SvgIcon id="hint" size={14} />
               Show Hint
             </motion.button>
           )}
@@ -551,8 +557,8 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onHome }) => {
             <motion.div key={`enc-${encouragementMessage}`}
               initial={{ scale: 0, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 1.2, opacity: 0 }}
               className="absolute inset-0 flex items-center justify-center z-50 pointer-events-none px-4">
-              <div className="px-6 py-3 rounded-2xl font-black text-2xl sm:text-4xl shadow-xl border border-white/20 tracking-tighter italic backdrop-blur-md text-center max-w-[80vw] text-white"
-                style={{ background: 'var(--gradient-button)' }}>
+              <div className="px-6 py-3.5 rounded-2xl font-black text-2xl sm:text-4xl shadow-xl border-2 border-amber-300 tracking-tighter italic backdrop-blur-md text-center max-w-[80vw] text-amber-950"
+                style={{ background: 'var(--gradient-gold)' }}>
                 {encouragementMessage}
               </div>
             </motion.div>
@@ -593,7 +599,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onHome }) => {
         <motion.button whileHover={{ y: -3 }} whileTap={{ scale: 0.9 }} onClick={onHome}
           className="gs-nav-btn flex flex-col items-center gap-1">
           <div className="gs-nav-icon p-3 rounded-full">
-            <Home size={22} className="text-slate-300" />
+            <SvgIcon id="home" size={22} />
           </div>
           <span className="gs-nav-label">Menu</span>
         </motion.button>
@@ -603,7 +609,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onHome }) => {
           onClick={handleUndo} disabled={undoCharges <= 0}
           className={cn('gs-nav-btn relative flex flex-col items-center gap-1', undoCharges <= 0 && 'opacity-40 cursor-not-allowed')}>
           <div className="gs-nav-icon p-3 rounded-full relative">
-            <Undo2 size={22} className="text-slate-300" />
+            <SvgIcon id="undo" size={22} className="text-slate-300" />
             {undoCharges > 0 && (
               <span className="gs-badge absolute -top-1 -right-1">{undoCharges}</span>
             )}
@@ -616,7 +622,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onHome }) => {
           onClick={handleRefresh} disabled={refreshCharges <= 0}
           className={cn('gs-nav-btn relative flex flex-col items-center gap-1', refreshCharges <= 0 && 'opacity-40 cursor-not-allowed')}>
           <div className={cn('p-3 rounded-full relative', refreshCharges > 0 ? 'gs-nav-icon-active' : 'gs-nav-icon')}>
-            <RefreshCw size={22} className={cn('text-slate-300', refreshCharges > 0 && 'animate-spin-slow')} />
+            <SvgIcon id="refresh" size={22} className={cn(refreshCharges > 0 ? 'text-amber-950' : 'text-slate-300', refreshCharges > 0 && 'animate-spin-slow')} />
             {refreshCharges > 0 && (
               <span className="gs-badge absolute -top-1 -right-1">{refreshCharges}</span>
             )}
@@ -628,7 +634,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onHome }) => {
         <motion.button whileHover={{ y: -3, rotate: -45 }} whileTap={{ scale: 0.9 }} onClick={resetGame}
           className="gs-nav-btn flex flex-col items-center gap-1">
           <div className="gs-nav-icon p-3 rounded-full">
-            <RotateCcw size={22} className="text-slate-300" />
+            <SvgIcon id="refresh" size={22} className="text-slate-300" />
           </div>
           <span className="gs-nav-label">Retry</span>
         </motion.button>
@@ -639,7 +645,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onHome }) => {
           disabled={inventory.hammer <= 0}
           className={cn('gs-nav-btn flex flex-col items-center gap-1', inventory.hammer <= 0 && 'opacity-30 cursor-not-allowed')}>
           <div className={cn('p-3 rounded-full relative', isHammerActive ? 'gs-nav-icon-hammer-active' : 'gs-nav-icon')}>
-            <HammerIcon size={22} fill={isHammerActive ? '#3b82f6' : 'none'} className={isHammerActive ? 'text-blue-400' : 'text-slate-300'} />
+            <SvgIcon id="hammer" size={22} className={isHammerActive ? 'text-white' : 'text-slate-300'} />
             {inventory.hammer > 0 && (
               <span className="gs-badge-amber absolute -top-1 -right-1">{inventory.hammer}</span>
             )}
@@ -651,7 +657,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onHome }) => {
         <motion.button whileHover={{ y: -3 }} whileTap={{ scale: 0.9 }} onClick={toggleSound}
           className="gs-nav-btn flex flex-col items-center gap-1">
           <div className={cn('p-3 rounded-full', soundEnabled ? 'gs-nav-icon-active' : 'gs-nav-icon')}>
-            {soundEnabled ? <Volume2 size={22} className="text-cyan-400" style={{ filter: 'drop-shadow(0 0 6px #06b6d4)' }} /> : <VolumeX size={22} className="text-slate-400" />}
+            <SvgIcon id="sound" size={22} className={soundEnabled ? 'text-amber-950' : 'text-slate-400'} />
           </div>
           <span className="gs-nav-label">Sound</span>
         </motion.button>
@@ -663,12 +669,11 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onHome }) => {
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-slate-950/80 backdrop-blur-md"
+            className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-slate-950/85 backdrop-blur-md"
           >
-            <motion.div
-              initial={{ scale: 0.8, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              className="gs-stage-clear-modal w-full max-w-sm rounded-[2.5rem] p-8 text-center"
+            <SvgCard
+              className="w-full max-w-sm rounded-[2.5rem] p-8 text-center"
+              variant="gold-border"
             >
               <motion.div 
                 animate={{ rotate: [0, 10, -10, 0], scale: [1, 1.2, 1] }} 
@@ -677,36 +682,35 @@ export const GameScreen: React.FC<GameScreenProps> = ({ onHome }) => {
               >
                 🏆
               </motion.div>
-              <h2 className="text-4xl font-black text-white mb-2 tracking-tighter" style={{ textShadow: '0 0 20px rgba(99,102,241,0.5)' }}>STAGE CLEAR!</h2>
-              <p className="font-bold mb-8 uppercase tracking-widest text-xs" style={{ color: 'rgba(148,163,184,0.7)' }}>Level {journeyLevel.id} Complete</p>
+              <h2 className="text-4xl font-black text-white mb-2 tracking-tighter" style={{ textShadow: '0 0 20px rgba(251,191,36,0.5)' }}>STAGE CLEAR!</h2>
+              <p className="font-bold mb-8 uppercase tracking-widest text-xs" style={{ color: '#fbbf24' }}>Level {journeyLevel.id} Complete</p>
 
-              <div className="rounded-3xl p-4 mb-8" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}>
+              <div className="rounded-3xl p-4 mb-8" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
                  <div className="flex flex-col items-center gap-1">
                   <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">Stage Cleared!</p>
                   <div className="flex items-center gap-2 mb-4">
-                    <Star size={20} fill="#FFD740" className="text-amber-400" />
+                    <SvgIcon id="stars" size={20} />
                     <p className="text-2xl font-black text-white">+10 Stars</p>
                   </div>
                   <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: '#1e293b' }}>
-                     <motion.div initial={{ width: 0 }} animate={{ width: '100%' }} className="h-full bg-blue-500" transition={{ delay: 0.5, duration: 1 }} />
+                     <motion.div initial={{ width: 0 }} animate={{ width: '100%' }} className="h-full bg-gradient-to-r from-amber-400 to-yellow-500" transition={{ delay: 0.5, duration: 1 }} />
                   </div>
                </div>
               </div>
 
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+              <SvgButton
                 onClick={() => {
                   addStars(10);
                   unlockLevel(journeyLevel!.id + 1);
                   onHome();
                   resetGame();
                 }}
-                className="w-full py-4 rounded-2xl bg-blue-500 text-white font-black text-lg shadow-xl shadow-blue-500/30"
+                className="w-full py-4 rounded-2xl"
+                variant="gold"
               >
                 CLAIM & CONTINUE
-              </motion.button>
-            </motion.div>
+              </SvgButton>
+            </SvgCard>
           </motion.div>
         )}
       </AnimatePresence>

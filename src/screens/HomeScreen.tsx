@@ -5,7 +5,10 @@
 
 import React, { useEffect, useRef } from 'react';
 import { motion } from 'motion/react';
-import { Play, Trophy, Settings, Calendar, Flame, Map, Target, Star } from 'lucide-react';
+import { SvgIcon } from '../components/SvgIcon';
+import { SvgButton } from '../components/SvgButton';
+import { SvgCard } from '../components/SvgCard';
+import { SvgBadge } from '../components/SvgBadge';
 import { useGameStore } from '../store/useGameStore';
 import { usePlayerStore, getRankForXP, getNextRank } from '../store/usePlayerStore';
 import { StarShop } from '../components/StarShop';
@@ -121,24 +124,36 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       {/* ── Particle Layer ──────────────────────────────────── */}
       <ParticleCanvas />
 
-      {/* ── Floating Block Deco ─────────────────────────────── */}
+      {/* ── Floating Gemstone Deco ─────────────────────────────── */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(10)].map((_, i) => (
-          <motion.div
-            key={i}
-            initial={{ x: `${10 + (i * 9)}%`, y: '115%', rotate: Math.random() * 360 }}
-            animate={{ y: '-15%', rotate: Math.random() * 360 + 360 }}
-            transition={{ duration: 18 + i * 2.5, repeat: Infinity, ease: 'linear', delay: i * 1.8 }}
-            className="absolute rounded-xl"
-            style={{
-              width: 20 + (i % 3) * 14,
-              height: 20 + (i % 3) * 14,
-              background: `rgba(${i % 2 === 0 ? '99,102,241' : '59,130,246'}, 0.08)`,
-              border: '1px solid rgba(99,102,241,0.2)',
-              backdropFilter: 'blur(2px)',
-            }}
-          />
-        ))}
+        {[...Array(8)].map((_, i) => {
+          const size = 18 + (i % 3) * 10;
+          const colors = ['#ff5252', '#69f0ae', '#ffd740', '#e040fb', '#448aff'];
+          const color = colors[i % colors.length];
+          const isDiamond = i % 2 === 0;
+          return (
+            <motion.div
+              key={i}
+              initial={{ x: `${10 + (i * 12)}%`, y: '115%', rotate: Math.random() * 360 }}
+              animate={{ y: '-15%', rotate: Math.random() * 360 + 360 }}
+              transition={{ duration: 20 + i * 4, repeat: Infinity, ease: 'linear', delay: i * 2 }}
+              className="absolute opacity-15"
+              style={{
+                width: size,
+                height: size,
+                color: color,
+              }}
+            >
+              <svg width="100%" height="100%" viewBox="0 0 10 10">
+                <polygon 
+                  points={isDiamond ? "5,0 10,5 5,10 0,5" : "5,0 10,3 8,10 2,10 0,3"} 
+                  fill="currentColor" 
+                  style={{ filter: `drop-shadow(0 0 4px ${color})` }}
+                />
+              </svg>
+            </motion.div>
+          );
+        })}
       </div>
 
       {/* ══════════════════════════════════════════════════════
@@ -151,49 +166,42 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         className="w-full max-w-sm flex items-stretch gap-3 mt-3 mb-4 z-10 flex-shrink-0 pt-safe"
       >
         {/* Rank + XP card */}
-        <div className="home-glass-card flex-1 flex items-center gap-3 p-3.5">
-          {/* Rank Badge */}
-          <div className="relative flex-shrink-0">
-            <div className="home-rank-badge w-12 h-12 rounded-2xl flex items-center justify-center text-2xl">
-              {rank.emoji}
+        <SvgCard className="flex-1 p-3.5" variant="stone">
+          <div className="flex items-center gap-3">
+            {/* Rank Badge */}
+            <div className="relative flex-shrink-0">
+              <div className="home-rank-badge w-12 h-12 rounded-2xl flex items-center justify-center text-2xl bg-slate-900/60 border border-slate-700">
+                {rank.emoji}
+              </div>
             </div>
-            <div className="home-rank-ring absolute -inset-1 rounded-2xl pointer-events-none" />
-          </div>
-          {/* XP Info */}
-          <div className="flex-1 min-w-0">
-            <div className="flex justify-between items-baseline mb-0.5">
-              <p className="home-label-xs">CURRENT RANK</p>
-              <p className="home-label-xs">{xp.toLocaleString()} XP</p>
-            </div>
-            <h3 className="text-sm font-black text-white leading-tight tracking-tight mb-1.5 truncate">
-              {rank.title}
-            </h3>
-            {/* XP Progress Bar */}
-            <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden relative">
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: `${progress}%` }}
-                transition={{ duration: 1.8, ease: 'easeOut', delay: 0.4 }}
-                className="home-xp-bar h-full rounded-full relative overflow-hidden"
-              >
-                <span className="home-xp-shine absolute inset-0" />
-              </motion.div>
+            {/* XP Info */}
+            <div className="flex-1 min-w-0">
+              <div className="flex justify-between items-baseline mb-0.5">
+                <p className="home-label-xs">CURRENT RANK</p>
+                <p className="home-label-xs">{xp.toLocaleString()} XP</p>
+              </div>
+              <h3 className="text-sm font-black text-white leading-tight tracking-tight mb-1.5 truncate">
+                {rank.title}
+              </h3>
+              {/* XP Progress Bar */}
+              <SvgProgressBar progress={progress} height={8} />
             </div>
           </div>
-        </div>
+        </SvgCard>
 
         {/* Stars / Currency */}
-        <motion.button
+        <motion.div
           animate={{ y: [0, -4, 0] }}
           transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
-          whileTap={{ scale: 0.92 }}
-          onClick={() => setShowShop(true)}
-          className="home-glass-card flex-shrink-0 flex flex-col items-center justify-center gap-1 px-3.5 py-2.5 min-w-[62px]"
-          id="home-stars-btn"
+          className="flex items-center"
         >
-          <Star size={22} fill="#fbbf24" className="drop-shadow-[0_0_8px_rgba(251,191,36,0.8)]" style={{ color: '#fbbf24' }} />
-          <span className="font-black text-amber-400 text-base leading-none">{stars}</span>
-        </motion.button>
+          <SvgBadge
+            type="star"
+            value={stars}
+            className="cursor-pointer py-3 h-full flex items-center"
+            onClick={() => setShowShop(true)}
+          />
+        </motion.div>
       </motion.div>
 
       <StarShop isOpen={showShop} onClose={() => setShowShop(false)} />
@@ -247,21 +255,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         {/* mid glow ring */}
         <div className="home-play-glow-ring absolute -inset-2 rounded-full pointer-events-none" />
 
-        <motion.button
-          whileHover={{ scale: 1.07 }}
-          whileTap={{ scale: 0.92 }}
+        <SvgButton
           onClick={onStart}
           id="home-play-btn"
-          className="home-play-btn relative w-24 h-24 sm:w-28 sm:h-28 rounded-full flex items-center justify-center shadow-2xl"
-          style={{ zIndex: 2 }}
+          className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full"
+          variant="gold"
         >
-          <Play
-            size={40}
-            fill="white"
-            className="ml-1.5"
-            style={{ filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.4))' }}
-          />
-        </motion.button>
+          <SvgIcon id="play" size={40} />
+        </SvgButton>
       </motion.div>
 
       {/* ══════════════════════════════════════════════════════
@@ -274,34 +275,26 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         className="w-full max-w-sm grid grid-cols-2 gap-3 mb-4 z-10"
       >
         {/* Best Score */}
-        <motion.button
-          whileHover={{ y: -3, scale: 1.02 }}
-          whileTap={{ scale: 0.96 }}
-          onClick={onLeaderboard}
-          id="home-score-card"
-          className="home-stat-card flex flex-col p-4 text-left"
-        >
-          <div className="w-8 h-8 rounded-xl bg-amber-500/20 flex items-center justify-center mb-2">
-            <Trophy size={17} className="text-amber-400" style={{ filter: 'drop-shadow(0 0 6px rgba(251,191,36,0.6))' }} />
+        <SvgCard className="p-4 cursor-pointer" variant="stone">
+          <div onClick={onLeaderboard}>
+            <div className="w-8 h-8 rounded-xl bg-amber-500/20 flex items-center justify-center mb-2">
+              <SvgIcon id="leaderboard" size={17} />
+            </div>
+            <span className="home-label-xs mb-1 block">BEST SCORE</span>
+            <span className="text-xl font-black text-white">{highScore.toLocaleString()}</span>
           </div>
-          <span className="home-label-xs mb-1">BEST SCORE</span>
-          <span className="text-xl font-black text-white">{highScore.toLocaleString()}</span>
-        </motion.button>
+        </SvgCard>
 
         {/* Daily Streak */}
-        <motion.button
-          whileHover={{ y: -3, scale: 1.02 }}
-          whileTap={{ scale: 0.96 }}
-          onClick={onDaily}
-          id="home-streak-card"
-          className="home-stat-card flex flex-col p-4 text-left"
-        >
-          <div className="w-8 h-8 rounded-xl bg-orange-500/20 flex items-center justify-center mb-2">
-            <Flame size={17} className="animate-flame text-orange-400" style={{ filter: 'drop-shadow(0 0 6px rgba(251,146,60,0.6))' }} />
+        <SvgCard className="p-4 cursor-pointer" variant="stone">
+          <div onClick={onDaily}>
+            <div className="w-8 h-8 rounded-xl bg-orange-500/20 flex items-center justify-center mb-2">
+              <SvgIcon id="daily" size={17} />
+            </div>
+            <span className="home-label-xs mb-1 block">STREAK</span>
+            <span className="text-xl font-black text-white">{dailyStreak} Days</span>
           </div>
-          <span className="home-label-xs mb-1">STREAK</span>
-          <span className="text-xl font-black text-white">{dailyStreak} Days</span>
-        </motion.button>
+        </SvgCard>
       </motion.div>
 
       {/* ══════════════════════════════════════════════════════
@@ -313,17 +306,15 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         transition={{ delay: 0.38 }}
         className="w-full max-w-sm mb-3 z-10"
       >
-        <motion.button
-          whileHover={{ scale: 1.02, y: -2 }}
-          whileTap={{ scale: 0.97 }}
+        <SvgButton
           onClick={onJourney}
           id="home-journey-btn"
-          className="home-journey-btn w-full py-4 rounded-[1.6rem] text-white font-black text-base tracking-wide shadow-2xl flex items-center justify-center gap-3 relative overflow-hidden"
+          className="w-full py-4 rounded-[1.6rem]"
+          variant="gold"
         >
-          <Map size={20} />
+          <SvgIcon id="journey" size={20} />
           JOURNEY MODE
-          <span className="home-journey-shine absolute inset-0 pointer-events-none" />
-        </motion.button>
+        </SvgButton>
       </motion.div>
 
       {/* ══════════════════════════════════════════════════════
@@ -335,27 +326,29 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         transition={{ delay: 0.44 }}
         className="w-full max-w-sm grid grid-cols-2 gap-3 mb-4 z-10"
       >
-        <motion.button
-          whileHover={{ scale: 1.03, y: -2 }}
-          whileTap={{ scale: 0.96 }}
+        <SvgButton
           onClick={onDaily}
           id="home-daily-btn"
-          className="home-secondary-btn home-daily-btn py-4 rounded-[1.4rem] text-white font-black text-sm flex flex-col items-center gap-1.5 shadow-xl relative overflow-hidden"
+          className="w-full py-4 rounded-[1.4rem]"
+          variant="stone"
         >
-          <Calendar size={18} />
-          DAILY
-        </motion.button>
+          <div className="flex flex-col items-center gap-1">
+            <SvgIcon id="daily" size={18} />
+            <span>DAILY</span>
+          </div>
+        </SvgButton>
 
-        <motion.button
-          whileHover={{ scale: 1.03, y: -2 }}
-          whileTap={{ scale: 0.96 }}
+        <SvgButton
           onClick={onQuests}
           id="home-missions-btn"
-          className="home-secondary-btn home-missions-btn py-4 rounded-[1.4rem] text-white font-black text-sm flex flex-col items-center gap-1.5 shadow-xl relative overflow-hidden"
+          className="w-full py-4 rounded-[1.4rem]"
+          variant="stone"
         >
-          <Target size={18} />
-          MISSIONS
-        </motion.button>
+          <div className="flex flex-col items-center gap-1">
+            <SvgIcon id="mission" size={18} />
+            <span>MISSIONS</span>
+          </div>
+        </SvgButton>
       </motion.div>
 
       {/* ══════════════════════════════════════════════════════
@@ -372,18 +365,18 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           whileTap={{ scale: 0.92 }}
           onClick={onLeaderboard}
           id="home-leaderboard-btn"
-          className="home-icon-btn p-3.5 rounded-2xl flex items-center justify-center"
+          className="home-icon-btn p-3 rounded-2xl flex items-center justify-center bg-slate-900/60 border border-slate-700 shadow-md"
         >
-          <Trophy size={20} className="text-slate-300" />
+          <SvgIcon id="leaderboard" size={20} />
         </motion.button>
         <motion.button
           whileHover={{ scale: 1.12 }}
           whileTap={{ scale: 0.92 }}
           onClick={onSettings}
           id="home-settings-btn"
-          className="home-icon-btn p-3.5 rounded-2xl flex items-center justify-center"
+          className="home-icon-btn p-3 rounded-2xl flex items-center justify-center bg-slate-900/60 border border-slate-700 shadow-md"
         >
-          <Settings size={20} className="text-slate-300" />
+          <SvgIcon id="settings" size={20} />
         </motion.button>
       </motion.div>
 

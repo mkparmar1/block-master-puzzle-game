@@ -7,7 +7,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useGameStore } from '../store/useGameStore';
 import { Difficulty } from '../game/blockShapes';
-import { Play, ChevronLeft, Grid3x3, Zap, Shield, Flame } from 'lucide-react';
+import { SvgIcon } from '../components/SvgIcon';
+import { SvgButton } from '../components/SvgButton';
+import { SvgCard } from '../components/SvgCard';
 
 /* ── Mini particle canvas ─────────────────────────────── */
 const MsParticles: React.FC = () => {
@@ -85,19 +87,19 @@ export const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({ onBa
       value: 'easy', label: 'Easy', desc: 'Simple Shapes',
       accent: '#22c55e', glow: 'rgba(34,197,94,0.35)',
       gradient: 'linear-gradient(135deg, #14532d, #16a34a)',
-      icon: <Shield size={20} />,
+      icon: <SvgIcon id="xp" size={20} />,
     },
     {
       value: 'medium', label: 'Medium', desc: 'Balanced Mix',
       accent: '#3b82f6', glow: 'rgba(59,130,246,0.45)',
       gradient: 'linear-gradient(135deg, #1e3a8a, #3b82f6)',
-      icon: <Zap size={20} />,
+      icon: <SvgIcon id="zap" size={20} />,
     },
     {
       value: 'hard', label: 'Hard', desc: 'Complex Blocks',
       accent: '#ef4444', glow: 'rgba(239,68,68,0.35)',
       gradient: 'linear-gradient(135deg, #7f1d1d, #ef4444)',
-      icon: <Flame size={20} />,
+      icon: <SvgIcon id="daily" size={20} />,
     },
   ];
 
@@ -126,9 +128,9 @@ export const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({ onBa
             whileTap={{ scale: 0.9 }}
             onClick={onBack}
             id="ms-back-btn"
-            className="ms-back-btn flex-shrink-0 flex items-center justify-center w-12 h-12 rounded-2xl"
+            className="ms-back-btn flex-shrink-0 flex items-center justify-center w-12 h-12 rounded-2xl bg-slate-900/60 border border-slate-700 shadow-md"
           >
-            <ChevronLeft size={24} className="text-slate-200" />
+            <SvgIcon id="back" size={24} />
           </motion.button>
 
           <div>
@@ -142,7 +144,7 @@ export const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({ onBa
         {/* ── Grid Dimensions ── */}
         <section className="mb-7">
           <div className="ms-section-label flex items-center gap-2 mb-3">
-            <Grid3x3 size={13} />
+            <SvgIcon id="theme" size={13} />
             GRID DIMENSIONS
           </div>
 
@@ -150,7 +152,7 @@ export const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({ onBa
             {sizes.map((sz, idx) => {
               const active = selectedSize === sz.value;
               return (
-                <motion.button
+                <motion.div
                   key={sz.value}
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -158,29 +160,16 @@ export const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({ onBa
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setSelectedSize(sz.value)}
                   id={`ms-size-${sz.value}`}
-                  className="ms-size-card relative flex flex-col items-center justify-center gap-2 py-4 rounded-2xl overflow-hidden"
-                  style={active ? {
-                    background: 'linear-gradient(135deg, #2563eb, #7c3aed)',
-                    boxShadow: '0 0 24px rgba(99,102,241,0.55), 0 8px 24px rgba(0,0,0,0.45)',
-                    border: '1px solid rgba(255,255,255,0.18)',
-                    transform: 'scale(1.04)',
-                  } : {
-                    background: 'rgba(255,255,255,0.05)',
-                    border: '1px solid rgba(255,255,255,0.09)',
-                    boxShadow: '0 4px 16px rgba(0,0,0,0.3)',
-                  }}
+                  className="cursor-pointer"
                 >
-                  <GridIcon size={sz.value} active={active} />
-                  <div className="text-center">
-                    <div className={`font-black text-lg leading-none ${active ? 'text-white' : 'text-slate-300'}`}>{sz.label}</div>
-                    <div className={`text-[9px] font-bold uppercase tracking-widest mt-0.5 ${active ? 'text-white/70' : 'text-slate-500'}`}>{sz.desc}</div>
-                  </div>
-                  {active && (
-                    <div className="absolute inset-0 pointer-events-none" style={{
-                      background: 'linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 60%)',
-                    }} />
-                  )}
-                </motion.button>
+                  <SvgCard className="p-4 flex flex-col items-center justify-center gap-2" variant={active ? 'gold-border' : 'stone'}>
+                    <GridIcon size={sz.value} active={active} />
+                    <div className="text-center">
+                      <div className={`font-black text-lg leading-none ${active ? 'text-amber-950' : 'text-slate-300'}`}>{sz.label}</div>
+                      <div className={`text-[9px] font-bold uppercase tracking-widest mt-0.5 ${active ? 'text-amber-950/70' : 'text-slate-500'}`}>{sz.desc}</div>
+                    </div>
+                  </SvgCard>
+                </motion.div>
               );
             })}
           </div>
@@ -197,7 +186,7 @@ export const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({ onBa
             {difficulties.map((diff, idx) => {
               const active = selectedDiff === diff.value;
               return (
-                <motion.button
+                <motion.div
                   key={diff.value}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -205,75 +194,37 @@ export const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({ onBa
                   whileTap={{ scale: 0.97 }}
                   onClick={() => setSelectedDiff(diff.value)}
                   id={`ms-diff-${diff.value}`}
-                  className="ms-diff-card relative flex items-center justify-between px-5 py-4 rounded-[1.4rem] overflow-hidden"
-                  style={active ? {
-                    background: diff.gradient,
-                    border: `1px solid ${diff.accent}66`,
-                    boxShadow: `0 0 28px ${diff.glow}, 0 8px 24px rgba(0,0,0,0.45)`,
-                  } : {
-                    background: 'rgba(255,255,255,0.04)',
-                    border: '1px solid rgba(255,255,255,0.08)',
-                    boxShadow: '0 4px 16px rgba(0,0,0,0.3)',
-                  }}
+                  className="cursor-pointer"
                 >
-                  {/* Left: color dot + text */}
-                  <div className="flex items-center gap-4">
-                    <div
-                      className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                      style={{
-                        background: active ? 'rgba(255,255,255,0.18)' : `${diff.accent}22`,
-                        border: `1.5px solid ${diff.accent}55`,
-                        boxShadow: active ? `0 0 14px ${diff.glow}` : 'none',
-                        color: active ? '#fff' : diff.accent,
-                      }}
-                    >
-                      {diff.icon}
-                    </div>
-                    <div className="text-left">
-                      <div className={`font-black text-lg tracking-tight leading-tight ${active ? 'text-white' : 'text-slate-300'}`}>
-                        {diff.label}
-                      </div>
-                      <div className={`text-[10px] font-bold uppercase tracking-widest ${active ? 'text-white/65' : 'text-slate-500'}`}>
-                        {diff.desc}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Right: play badge when active */}
-                  <AnimatePresence>
-                    {active && (
-                      <motion.div
-                        initial={{ scale: 0, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        exit={{ scale: 0, opacity: 0 }}
-                        className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center"
+                  <SvgCard className="px-5 py-4 flex items-center justify-between" variant={active ? 'gold-border' : 'stone'}>
+                    {/* Left: color dot + text */}
+                    <div className="flex items-center gap-4">
+                      <div
+                        className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 bg-slate-900/60 border border-slate-700"
                         style={{
-                          background: 'rgba(255,255,255,0.22)',
-                          boxShadow: '0 0 12px rgba(255,255,255,0.3)',
+                          boxShadow: active ? `0 0 14px ${diff.glow}` : 'none',
                         }}
                       >
-                        <Play size={15} fill="white" className="ml-0.5 text-white" />
-                      </motion.div>
+                        {diff.icon}
+                      </div>
+                      <div className="text-left">
+                        <div className={`font-black text-lg tracking-tight leading-tight ${active ? 'text-amber-950' : 'text-slate-300'}`}>
+                          {diff.label}
+                        </div>
+                        <div className={`text-[10px] font-bold uppercase tracking-widest ${active ? 'text-amber-950/70' : 'text-slate-500'}`}>
+                          {diff.desc}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Right: play badge when active */}
+                    {active && (
+                      <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-amber-950/20">
+                        <SvgIcon id="play" size={14} />
+                      </div>
                     )}
-                  </AnimatePresence>
-
-                  {/* Shine overlay */}
-                  {active && (
-                    <div className="absolute inset-0 pointer-events-none" style={{
-                      background: 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 55%)',
-                    }} />
-                  )}
-
-                  {/* Glow pulse for selected */}
-                  {active && (
-                    <motion.div
-                      className="absolute inset-0 rounded-[1.4rem] pointer-events-none"
-                      animate={{ opacity: [0.4, 0.8, 0.4] }}
-                      transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
-                      style={{ boxShadow: `inset 0 0 20px ${diff.glow}` }}
-                    />
-                  )}
-                </motion.button>
+                  </SvgCard>
+                </motion.div>
               );
             })}
           </div>
@@ -284,36 +235,16 @@ export const LevelSelectionScreen: React.FC<LevelSelectionScreenProps> = ({ onBa
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="relative"
         >
-          {/* Pulsing outer glow */}
-          <motion.div
-            className="absolute -inset-2 rounded-[2rem] pointer-events-none"
-            animate={{ opacity: [0.3, 0.7, 0.3] }}
-            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-            style={{ background: 'linear-gradient(135deg, rgba(37,99,235,0.35), rgba(6,182,212,0.35))', filter: 'blur(8px)' }}
-          />
-
-          <motion.button
-            whileHover={{ scale: 1.02, y: -2 }}
-            whileTap={{ scale: 0.96 }}
+          <SvgButton
             onClick={handleStart}
             id="ms-start-btn"
-            className="ms-start-btn relative w-full flex items-center justify-center gap-3 py-5 rounded-[1.8rem] text-white font-black text-xl tracking-wide overflow-hidden"
+            className="w-full py-5 rounded-[1.8rem]"
+            variant="gold"
           >
-            <Play size={24} fill="white" />
+            <SvgIcon id="play" size={24} />
             START MISSION
-            {/* Shine sweep */}
-            <motion.div
-              className="absolute inset-0 pointer-events-none"
-              animate={{ x: ['-100%', '150%'] }}
-              transition={{ duration: 2.8, repeat: Infinity, ease: 'easeInOut', repeatDelay: 1.5 }}
-              style={{
-                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent)',
-                width: '60%',
-              }}
-            />
-          </motion.button>
+          </SvgButton>
         </motion.div>
       </motion.div>
     </div>

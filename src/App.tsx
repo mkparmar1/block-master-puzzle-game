@@ -20,6 +20,7 @@ import { useThemeStore } from './store/useThemeStore';
 import { usePlayerStore } from './store/usePlayerStore';
 import { AnimatePresence, motion } from 'motion/react';
 import { App as CapApp } from '@capacitor/app';
+import { GlobalSvgDefs } from './components/GlobalSvgDefs';
 
 type Screen = 'tutorial' | 'home' | 'level-selection' | 'game' | 'settings' | 'leaderboard' | 'daily' | 'quests' | 'journey';
 
@@ -115,6 +116,7 @@ export default function App() {
 
   return (
     <div className="h-full w-full overflow-hidden text-slate-100 selection:bg-blue-500/30 relative" style={{ background: '#0F172A' }}>
+      <GlobalSvgDefs />
 
       {/* Screen content — only mount after splash has dismissed to prevent double-flash */}
       <AnimatePresence>
